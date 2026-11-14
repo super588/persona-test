@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>历史人格解析</title>
+<style>
+  :root{
+    --bg:#f5efe6; --ink:#2a1a1a; --gold:#b8860b; --gold2:#d4af37;
+    --card:#fffdf8; --muted:#8a7d6d;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg); color:var(--ink);
+    min-height:100vh;
+    background-image:radial-gradient(circle at 20% 10%, rgba(184,134,11,.06), transparent 40%),
+                     radial-gradient(circle at 80% 90%, rgba(184,134,11,.08), transparent 40%);
+  }
+  .screen{display:none; min-height:100vh; padding:24px 20px 48px;}
+  .screen.active{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+  .wrap{max-width:520px; margin:0 auto;}
+
+  .brand{text-align:center; color:var(--muted); font-size:12px; letter-spacing:2px; margin:10px 0 4px;}
+  .title{text-align:center; font-size:24px; font-weight:800; letter-spacing:1px; line-height:1.45; margin:6px 0 2px;}
+  .subtitle{text-align:center; color:var(--muted); font-size:14px; margin-bottom:22px;}
+  .hook{text-align:center; font-size:14px; line-height:1.8; color:#6b5d4d; margin:0 0 18px;}
+  .rule-note{text-align:center; color:#c9bdaa; font-size:11px; margin-top:20px;}
+
+  .card{background:var(--card); border-radius:18px; padding:28px 22px; box-shadow:0 8px 30px rgba(42,26,26,.08);}
+
+  .btn{display:block; width:100%; padding:15px; border:none; border-radius:14px; font-size:17px; font-weight:700;
+       cursor:pointer; text-align:center; transition:transform .08s ease, opacity .15s ease;}
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold2)); color:#fff;}
+  .btn-ghost{background:#f2ece2; color:var(--ink);}
+  .btn+.btn{margin-top:12px;}
+
+  .code-input{width:100%; padding:16px; font-size:26px; text-align:center; letter-spacing:12px; border:2px solid #e6dccb;
+    border-radius:14px; outline:none; background:#fff; color:var(--ink); margin-bottom:16px;}
+  .code-input:focus{border-color:var(--gold);}
+  .err{color:#c0392b; font-size:13px; text-align:center; min-height:18px; margin-bottom:8px;}
+
+  .gender-row{display:flex; gap:12px; margin-top:8px;}
+  .gender-row .btn{flex:1; padding:18px 8px; font-size:16px;}
+
+  .progress-bar{height:6px; background:#efe6d8; border-radius:3px; overflow:hidden; margin:6px 0 22px;}
+  .progress-fill{height:100%; background:linear-gradient(90deg,var(--gold),var(--gold2)); transition:width .3s ease;}
+  .q-count{text-align:center; color:var(--muted); font-size:13px; margin-bottom:16px;}
+  .q-text{font-size:20px; font-weight:700; line-height:1.5; margin-bottom:24px; text-align:center;}
+  .opt{display:block; width:100%; text-align:left; padding:15px 16px; margin-bottom:12px; border:1.5px solid #e6dccb;
+    border-radius:14px; background:#fff; font-size:16px; line-height:1.45; cursor:pointer; transition:all .15s ease;}
+  .opt:active{transform:scale(.99);}
+  .opt.sel{border-color:var(--gold); background:#fbf3df;}
+  .opt .tag{color:var(--gold); font-weight:800; margin-right:8px;}
+  .quiz-nav{display:flex; gap:12px; margin-top:10px;}
+  .quiz-nav .btn{flex:1;}
+
+  .result-head{text-align:center; margin-bottom:8px;}
+  .result-head .fig-name{font-size:34px; font-weight:900; letter-spacing:2px; margin:6px 0 2px;}
+  .result-head .fig-tag{color:var(--gold); font-style:italic; font-size:15px; margin-bottom:4px;}
+  .result-head .dim-tags{margin:10px 0 2px;}
+  .result-head .dim-tags span{display:inline-block; background:#fbf3df; color:var(--gold); border:1px solid #ecd9a8;
+    border-radius:20px; padding:4px 12px; font-size:13px; margin:3px 4px;}
+
+  .canvas-wrap{margin:18px auto 8px; text-align:center;}
+  canvas{max-width:100%; height:auto; border-radius:16px; box-shadow:0 10px 34px rgba(42,26,26,.14);}
+  .save-tip{text-align:center; color:var(--muted); font-size:12px; margin:10px 0 16px;}
+  .back-link{display:block; text-align:center; color:var(--gold); font-size:14px; margin-top:18px; cursor:pointer; text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<!-- ============ 门禁屏 ============ -->
+<div class="screen active" id="screen-gate">
+  <div class="wrap">
+    <div class="brand">历史人格解析 · 仅供娱乐</div>
+    <div class="title">你正在走的路，<br>早有人替你走过</div>
+    <div class="subtitle">24 道情境题 · 找到与你底色相近的历史原型</div>
+    <div class="card">
+      <div class="hook">有些难，你以为只有自己在扛；有些路，你以为只有自己在走。<br>其实早在几百年前，就有人用和你差不多的性格，把这条路走完了一遍。</div>
+      <input class="code-input" id="codeInput" inputmode="numeric" maxlength="8" placeholder="输入访问码" autocomplete="off">
+      <div class="err" id="codeErr"></div>
+      <button class="btn btn-primary" onclick="enterTest()">开始测试</button>
+    </div>
+    <div class="rule-note">非心理测评 · 非算命 · 结果仅供娱乐</div>
+  </div>
+</div>
+
+<!-- ============ 性别筛选屏 ============ -->
+<div class="screen" id="screen-gender">
+  <div class="wrap">
+    <div class="brand">历史人格解析 · 仅供娱乐</div>
+    <div class="title">你是谁</div>
+    <div class="subtitle">选一组，结果更贴合你</div>
+    <div class="card">
+      <div class="gender-row">
+        <button class="btn btn-ghost" onclick="setGender('f')">我是女生</button>
+        <button class="btn btn-ghost" onclick="setGender('m')">我是男生</button>
+        <button class="btn btn-ghost" onclick="setGender('all')">男女都行</button>
+      </div>
+    </div>
+    <div class="rule-note">性别只用于筛选结果池，不影响计分</div>
+  </div>
+</div>
+
+<!-- ============ 答题屏 ============ -->
+<div class="screen" id="screen-quiz">
+  <div class="wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="q-count" id="qCount"></div>
+    <div class="q-text" id="qText"></div>
+    <div id="qOptions"></div>
+    <div class="quiz-nav">
+      <button class="btn btn-ghost" id="btnPrev" onclick="prevQuestion()">上一题</button>
+      <button class="btn btn-primary" id="btnNext" onclick="nextQuestion()">下一题</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 结果屏 ============ -->
+<div class="screen" id="screen-result">
+  <div class="wrap">
+    <div class="result-head" id="resultHead"></div>
+    <div class="canvas-wrap"><canvas id="resultCanvas"></canvas></div>
+    <div class="save-tip">↑ 长按图片可保存到相册</div>
+    <button class="btn btn-primary" onclick="saveImage()">保存结果图</button>
+    <button class="btn btn-ghost" onclick="restart()">再测一次</button>
+    <div class="back-link" onclick="backToGender()">换一组重测</div>
+    <div class="rule-note">非心理测评 · 非算命 · 结果仅供娱乐 · 请勿用于任何预测用途</div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   配置区（换皮肤只改这里 —— 对象库 / 题库 / 文案 / 标题 / 访问码）
+   ===================================================================== */
+const CONFIG = {
+  title: "你正在走的路，早有人替你走过",
+  subtitle: "24 道情境题 · 找到与你底色相近的历史原型",
+  accessCode: "7258",
+  dims: ["谋略","果敢","才华","气度","坚韧","浪漫","仁爱","独立"],
+
+  // 16 位人物：dims 顺序与上面 dims 一一对应（0-100）
+  // 字段：portrait=人物画像 / alike=你们哪里像 / life=TA的一生 / fate=像你这类人后来怎么样了
+  figures: [
+    {name:"李白", gender:"m", tagline:"一生求自由，一生不得志的天才",
+     dims:[30,80,95,70,60,100,50,90],
+     portrait:"才华横溢、最受不了束缚的人。你骨子里有个「不想按别人规矩活」的自己，认定的事九头牛都拉不回来。",
+     alike:"你和他最像的，是那份改不掉的对自由的执念，和藏不住的才华。你们都不愿意为了世俗意义上的成功委屈自己，更想用自己喜欢的方式活着。",
+     life:"李白一生都在「入世」和「出世」之间折腾：年轻时四处游历、一心想当官干大事，却因为性子太直太傲、不懂官场潜规则，几次都没能如愿。官场失意后，他把一肚子不甘全写进了诗，反而因此流传千年。他这辈子看似潇洒，其实一辈子都在「自由」和「不得志」之间拉扯。",
+     fate:"像你这类人，历史上通常两条路：要么在真正擅长的领域一飞冲天，要么在「被规则困住」里反复内耗。你的分水岭不是环境给不给机会，而是能不能早点把才华落到一件具体、能做出结果的事上。",
+     lines:["天生我材必有用，千金散尽还复来","安能摧眉折腰事权贵","长风破浪会有时"]},
+    {name:"诸葛亮", gender:"m", tagline:"一辈子替别人扛事，把自己累垮的谋士",
+     dims:[100,60,90,85,95,50,70,60],
+     portrait:"想得深、看得远、极重责任的人。你习惯先谋后动，把每件事都安排得明明白白，是那种让人安心托付的人。",
+     alike:"你和他最像的，是那份「这事交给我你放心」的责任感，和凡事想在前头的大局观。别人只想到一步，你已经想到了三步。",
+     life:"诸葛亮一生都在「鞠躬尽瘁」：被刘备三顾茅庐请出山后，他一辈子替蜀汉扛起所有重担，从定三分、联吴抗曹，到后来的六出祁山、北伐中原。他算无遗策，却把所有压力都压在自己一个人身上，最后活活累死在五丈原。他赢了一辈子，也扛了一辈子。",
+     fate:"像你这类人，历史上最常见的结局不是「不够强」，而是「太能扛」——扛到最后把自己累垮。你的成长课题从来不是能力，而是学会借力、授权，别把所有担子都往自己肩上放。",
+     lines:["非淡泊无以明志，非宁静无以致远","鞠躬尽瘁，死而后已","谋定而后动"]},
+    {name:"秦始皇", gender:"m", tagline:"敢第一个吃螃蟹的开创者，却也活成了孤家寡人",
+     dims:[90,100,60,80,85,20,30,95],
+     portrait:"天生要强、敢想敢做的人。你有魄力、有决断，认定的事一定要做成，骨子里有股「我不信命」的狠劲。",
+     alike:"你和他最像的，是那股「别人不敢我敢、别人不做我做」的开创劲，和极强的掌控欲。你想赢，也真的有能力赢。",
+     life:"秦始皇用十年扫平六国、统一天下，又用一辈子去「开创」：统一文字、货币、度量衡，修长城、建驰道，把所有别人不敢想的事都做了一遍。他是中国历史上第一个「皇帝」，但也因为太强硬、太独断、谁都不信，晚年把自己活成了孤家寡人，帝国也在他死后迅速崩塌。",
+     fate:"像你这类人，历史上最容易在「冲得太猛」上栽跟头：成也果决、败也独断。你的功课是学会在关键时刻听一听不同意见——刚极易折，柔一点，反而能走得更远、更稳。",
+     lines:["六王毕，四海一","书同文，车同轨","朕为始皇帝"]},
+    {name:"项羽", gender:"m", tagline:"一身肝胆的英雄，却输给了自己的骄傲",
+     dims:[40,100,50,90,70,80,40,90],
+     portrait:"重情重义、敢爱敢恨的人。你身上有股不撞南墙不回头的英雄气，朋友愿意跟着你，因为你仗义、护短、真诚。",
+     alike:"你和他最像的，是那份烈火一样的真性情和极重的自尊。你对朋友掏心掏肺，也绝不轻易向谁低头。",
+     life:"项羽年纪轻轻就扛起反秦大旗，巨鹿之战破釜沉舟、以少胜多，一时天下无敌。但他太重感情、太骄傲、又听不进劝，鸿门宴上放走刘邦，一步步错失先机，最后在垓下四面楚歌、乌江自刎。他一生刚猛，却也一生被自己的骄傲和冲动牵着走。",
+     fate:"像你这类人，历史上最大的坑不是能力不够，而是「骄傲」——关键时刻听不进别人的一句劝，冲动替自己做主。你的功课是：做重大决定前，逼自己多听一句、慢半拍。",
+     lines:["力拔山兮气盖世","生当作人杰，死亦为鬼雄","破釜沉舟"]},
+    {name:"苏轼", gender:"m", tagline:"被命运反复捶打，却越活越通透的乐天派",
+     dims:[60,60,95,100,85,90,80,70],
+     portrait:"才华与豁达并重的人。你再难的日子也能自嘲着、笑着过，是那种「有你在场子就不冷」的人。",
+     alike:"你和他最像的，是那份「天塌下来也能笑着扛」的豁达，和把苦日子过出滋味的本事。你心里有苦，但你从不被苦压垮。",
+     life:"苏轼一生被贬了又贬，从黄州到惠州再到海南，一次比一次远、一次比一次苦。但别人在逆境里垮掉，他却在逆境里活出了滋味：写诗、做饭、交朋友、把日子过成诗。他在最倒霉的境遇里，反而活出了人生最通透的样子。",
+     fate:"像你这类人，历史上往往不是不痛，而是太会「看开」——把豁达当成止痛药，反而容易逃避真正该面对的坎。你的功课是：该跨的坎别绕，豁达可以帮你扛，但不能替你过。",
+     lines:["一蓑烟雨任平生","人间有味是清欢","此心安处是吾乡"]},
+    {name:"岳飞", gender:"m", tagline:"一身铁骨，却输给了「太忠诚」的守护者",
+     dims:[70,90,60,85,100,40,80,50],
+     portrait:"信念坚定、极重承诺的人。你认定的人和事，再难也会守到底，是那种可以托付后背的人。",
+     alike:"你和他最像的，是那份刻进骨子里的责任感和说到做到的重承诺。答应了别人的事，你拼了命也会做到。",
+     life:"岳飞把一辈子都交给了「精忠报国」：从最底层一步步杀成一代名将，抗金战场上所向披靡，眼看就要收复失地，却因为太忠诚、太不懂「明哲保身」，被十二道金牌召回，最后冤死在风波亭。他守住了忠义，却没守住自己。",
+     fate:"像你这类人，历史上最容易「为别人燃尽自己」——把责任扛成枷锁，忘了自己也需要被照顾。你的功课是：忠诚和担当很珍贵，但请先把自己也算进去，你的感受同样重要。",
+     lines:["三十功名尘与土，八千里路云和月","莫等闲，白了少年头，空悲切","精忠报国"]},
+    {name:"成吉思汗", gender:"m", tagline:"把不可能变成可能的征服者，却跑得太快丢下身边人",
+     dims:[85,100,40,70,90,30,30,100],
+     portrait:"视野辽阔、野心勃勃的人。你的字典里没有「不可能」，越是不可能的地方，你越想闯一闯。",
+     alike:"你和他最像的，是那份永远在路上的野心和「困不住也拦不住」的冲劲。你想要更大的世界，也真的敢去要。",
+     life:"成吉思汗从草原上一个被追杀的少年，一路杀成统一蒙古、横扫欧亚的征服者。他一辈子都在「开拓」，从不停下，硬生生把一支散落的部落，打造成了当时世界上最强大的帝国。但他一辈子都在马上征战，很少停下脚步，也几乎没时间陪伴家人。",
+     fate:"像你这类人，历史上最常见的遗憾不是「没跑成」，而是「跑太快，把身边人落下了」。你的功课是：偶尔回头看看，陪伴和牵挂，比征服更长久。",
+     lines:["一代天骄，成吉思汗","我要让青草覆盖的地方都成为我的牧场","凡是敌人，皆可征服"]},
+    {name:"康熙", gender:"m", tagline:"少年隐忍、一辈子稳扎稳打，笑到最后的治理者",
+     dims:[95,70,70,90,80,40,70,60],
+     portrait:"少年老成、格局宏大的人。你能忍一时之辱，也能守一世之业，是那种「闷声干大事」的人。",
+     alike:"你和他最像的，是那份超乎年龄的沉稳和「不急于一时」的定力。你不爱张扬，但每一步都走得很稳，最后往往是你赢。",
+     life:"康熙八岁登基，十四岁就亲手擒了权臣鳌拜，之后平三藩、收台湾、亲征噶尔丹，一件件把大清的江山牢牢握在手里。他一辈子都在「稳中求进」，该忍的时候绝不出头，该出手的时候绝不手软，是历史上少有的「笑到最后」的人。",
+     fate:"像你这类人，历史上通常能走得很远，但最大的隐患是「太能忍」——把情绪都压进心里，委屈了自己。你的功课是：该表达时说出来，别让「懂事」变成对自己的消耗。",
+     lines:["守业更比创业难","擒鳌拜，平三藩，收台湾","朕为君，当为天下先"]},
+
+    {name:"武则天", gender:"f", tagline:"把命运牢牢攥在自己手里的女王，高处却无人可依",
+     dims:[95,95,70,80,90,30,40,100],
+     portrait:"清醒、果决、极有野心的人。你从不把命运交到别人手里，再难的处境也能凭自己的手腕杀出一条路。",
+     alike:"你和她最像的，是那份「我命由我不由天」的狠劲，和目标感极强的清醒。你从不等谁来拯救，你自己就是自己的靠山。",
+     life:"武则天从后宫一个不起眼的才人，一步步走到大权在握，最后干脆自己称帝，成为中国历史上唯一的女皇帝。她一辈子都在「逆天改命」：在那个女性毫无机会的年代，硬是凭清醒的头脑和铁腕手段，把所有人都觉得「不可能」的位置坐稳了。",
+     fate:"像你这类人，历史上往往能爬得很高，但越到高处越孤独，越容易把柔软藏得太深。你的功课是：偶尔示弱不是失败，是另一种强大——别让「强」成为你唯一的铠甲。",
+     lines:["女子又如何，我偏要这天下","无字碑，功过由后人评说","我命由我不由天"]},
+    {name:"李清照", gender:"f", tagline:"一生至情至性，却也一生漂泊的才女",
+     dims:[40,40,95,60,70,90,70,85],
+     portrait:"情感细腻、才华绝世的人。你爱就爱得热烈、写就写到极致，是那种一眼能看穿情绪暗流的人。",
+     alike:"你和她最像的，是那份极细腻的共情力和对美好事物的极致追求。你能一眼看穿别人藏起来的情绪，也容易为一句歌词、一个画面心动很久。",
+     life:"李清照前半生是幸福的才女，和丈夫琴瑟和鸣、诗词唱和；可后半生命运急转直下——国破家亡、丈夫病逝、一路南逃漂泊，晚年孤苦无依。她一生都在用词记录自己的爱与痛，从「沉醉不知归路」写到「凄凄惨惨戚戚」，把一生的起落都写成了千古绝唱。",
+     fate:"像你这类人，历史上最大的课题不是才华不够，而是「太敏感」——别人的一句话都能在心里掀起巨浪。你的功课是：给情绪装一层过滤网，别什么都往心里去，你的温柔很贵，要留给值得的人。",
+     lines:["生当作人杰，死亦为鬼雄","知否知否，应是绿肥红瘦","此情无计可消除，才下眉头，却上心头"]},
+    {name:"花木兰", gender:"f", tagline:"关键时刻一个人扛起所有的女英雄，却总忘了自己也会累",
+     dims:[50,95,50,70,95,50,70,90],
+     portrait:"独立、坚韧、有担当的人。你外表温柔、内里刚强，认定的事一个人也能扛起来，是关键时刻特别靠得住的人。",
+     alike:"你和她最像的，是那份「我不扛谁扛」的担当，和温柔外表下的那股刚强。越是关键时刻，你越能爆发出让人意外的力量。",
+     life:"花木兰本是普通家庭的女儿，可当征兵令下来、父亲年迈无子，她毅然女扮男装、替父从军，在沙场上征战多年，立下赫赫战功。她一个人扛起了整个家的重担，用行动证明了「谁说女子不如男」，最后又功成身退、回家尽孝。",
+     fate:"像你这类人，历史上往往很能扛，但最大的隐患是「逞强」——把累都咽进肚子里，让所有人都以为你不需要被照顾。你的功课是：你也有软弱的权利，累了就停下来歇歇，没人要求你永远无所不能。",
+     lines:["谁说女子不如男","万里赴戎机，关山度若飞","愿为市鞍马，从此替爷征"]},
+    {name:"王昭君", gender:"f", tagline:"用柔软化解最硬冲突的和平使者，却总在成全别人",
+     dims:[50,50,60,90,85,70,90,80],
+     portrait:"温柔而坚定的人。你能在最需要的时候，用柔软化解最硬的冲突，是那种「有你在就有和气」的人。",
+     alike:"你和她最像的，是那份天生的温柔和「牺牲自己顾全大局」的懂事。你特别会照顾人，有你在的地方，气氛总是舒服的。",
+     life:"王昭君本是深宫中被冷落的美人，当匈奴求亲、无人愿去时，她主动请行，远嫁塞外和亲，用一个人的远嫁换来了边关几十年的和平。她一辈子都在「成全」——成全国家、成全大义，却很少有人问过她自己愿不愿意。",
+     fate:"像你这类人，历史上最容易「成全别人、委屈自己」——把牺牲感当成习惯，忘了自己也值得被照顾。你的功课是：偶尔把位置换一换，也让自己当一回「被照顾」的人。",
+     lines:["一去紫台连朔漠，独留青冢向黄昏","琵琶一曲，化作和平","落雁沉鱼，倾国倾城"]},
+    {name:"杨玉环", gender:"f", tagline:"把美活成信仰的人，却把价值全押在了「被爱」上",
+     dims:[30,40,80,60,40,95,70,40],
+     portrait:"爱美、懂美、追求极致美好的人。你审美在线、生活有仪式感，能把普通日子过成别人羡慕的样子，是天生的浪漫主义者。",
+     alike:"你和她最像的，是那份对美的极致追求和把生活过出仪式感的本事。你懂得欣赏美好，也愿意为美好付出。",
+     life:"杨玉环把「美」活成了一种信仰，她的美貌和才情让「回眸一笑百媚生」成为千古名句，也让一代帝王为之倾倒。但她一生的荣辱、甚至最后的结局，都系在「被爱」上——被爱时集万千宠爱于一身，失势时便香消玉殒。她惊艳了一整个时代，却没能把命运握在自己手里。",
+     fate:"像你这类人，历史上最大的课题是「别把价值全押在被爱上」。你的功课是：你的光芒本身就足够耀眼，不必等谁来照亮——先做自己的太阳。",
+     lines:["回眸一笑百媚生","云想衣裳花想容","一骑红尘妃子笑"]},
+    {name:"穆桂英", gender:"f", tagline:"挂帅出征的女将军，越难越来劲的领袖",
+     dims:[85,95,50,75,85,40,60,90],
+     portrait:"果敢、聪慧、敢闯敢当的人。你越是有挑战越兴奋，是天生的 leader，越难越能激发你的斗志。",
+     alike:"你和她最像的，是那份「越难越来劲」的斗志和天生带团队的能力。别人越说不行，你越想证明行。",
+     life:"穆桂英本是山寨之女，武艺高强、有勇有谋，后来挂帅出征、大破天门阵，成为杨家将里最耀眼的统帅。她一生都在「打仗」——打的是看得见的敌人，也是看不见的偏见：在那个「女子不宜抛头露面」的年代，她硬是用一场场胜仗，让所有人闭嘴。",
+     fate:"像你这类人，历史上往往能闯出一片天，但最大的隐患是「冲太猛、忽略细节」。你的功课是：冲锋之前留一步，谋定后动的你，会比只凭冲劲的你可怕十倍。",
+     lines:["我不挂帅谁挂帅","大破天门阵","谁说女儿不能上阵杀敌"]},
+    {name:"班昭", gender:"f", tagline:"靠真才实学赢得尊重，却低调到差点被埋没的才女",
+     dims:[70,40,90,75,70,50,85,60],
+     portrait:"沉静、好学、有分寸的人。你不张扬，但肚子里有货，一开口就让人信服，是靠真才实学赢得尊重的人。",
+     alike:"你和她最像的，是那份「不靠关系靠实力」的底气，和沉得下心做事的定力。你不爱出风头，但你的实力藏都藏不住。",
+     life:"班昭是东汉著名的才女，哥哥班固写《汉书》没写完就去世，她接手续写，靠自己的学识完成了这部千古史书。她还被召入宫给皇后、贵人们当老师，一生靠「学问」二字赢得了那个时代难得的尊重。她从不靠身份，只靠实力。",
+     fate:"像你这类人，历史上最大的遗憾往往是「太低调」——明明很有料，却因为不争不抢，被埋没、被忽视。你的功课是：该亮剑时别谦虚，你值得被更多人看见。",
+     lines:["续写汉书，班门有女","腹有诗书气自华","靠实力说话，不靠身份"]},
+    {name:"上官婉儿", gender:"f", tagline:"才情与手腕并存，在夹缝里游刃有余的才女",
+     dims:[85,60,90,70,60,60,50,85],
+     portrait:"聪明、机敏、进退有度的人。你能在复杂的环境里游刃有余，是那种「相处舒服但不敢小看」的人。",
+     alike:"你和她最像的，是那份高情商和高智商兼备的「看人看事极准」。你懂得拿捏分寸，能在复杂的人际关系里如鱼得水。",
+     life:"上官婉儿出身名门却幼年家破，凭着过人的才情和手腕，在唐朝最波诡云谲的宫廷里一步步站稳脚跟，成为一代「巾帼宰相」。她一辈子都在「平衡」——平衡各方势力、拿捏进退分寸，活成了复杂环境里的顶级高手。",
+     fate:"像你这类人，历史上往往混得开，但最大的隐患是「太会拿捏、活得太累」。你的功课是：偶尔放下算计，做个简单开心的人——不用时时刻刻都那么聪明。",
+     lines:["才华绝代，称量天下","进退之间，自有章法","腹有诗书，落笔惊风雨"]},
+  ],
+
+  // 给你的建议（按人物名，结果卡展示）
+  advice: {
+    "李白":"把你那天马行空的才华，落到一件能持续做下去的具体事上；别用「自由」当逃避的借口，真正的自由，是把喜欢的事做到极致后换来的选择权。",
+    "诸葛亮":"学会把「我能扛」换成「我们一起扛」，把一部分担子交出去；你不是超人，允许自己偶尔停下来喘口气，你的价值从来不只在「有用」。",
+    "秦始皇":"做重大决定前，主动找一两个信得过的人唱反调；刚极易折，偶尔的柔软和倾听不是软弱，是让你走得更远、更稳的智慧。",
+    "项羽":"做决定前逼自己慢半拍、多听一句不同的声音；骄傲是你的铠甲，但别让它变成蒙住眼睛的布。",
+    "苏轼":"豁达是你的天赋，但别用它逃避该面对的坎；该争取的别轻易「看开」，你值得把日子过好，也值得为自己争取一次。",
+    "岳飞":"把「责任」和「自我」放到同一架天平上；忠诚和担当很珍贵，但请先把自己也算进去，你的感受同样重要。",
+    "成吉思汗":"偶尔放慢脚步，回头看看被你落在身后的人；征服世界很爽，但陪伴和牵挂，才是能陪你走最远的东西。",
+    "康熙":"别把「懂事」和「忍」变成习惯，该表达的情绪要表达；你扛得住很多事，但你的心也需要一个出口。",
+    "武则天":"你强大到能一个人扛下所有，但偶尔示弱不是失败；把柔软留给值得的人，你不需要永远做那个最「硬」的人。",
+    "李清照":"给情绪装一层过滤网，别什么都往心里去；你的敏感是天赋，要用在值得的人和事上，而不是用来折磨自己。",
+    "花木兰":"你总替别人扛，但请记得你也有软弱的权利；累了就说，不必永远无所不能，被照顾一点都不丢人。",
+    "王昭君":"偶尔把位置换一换，也让自己当一回「被照顾」的人；你的温柔很贵，先分一点给自己。",
+    "杨玉环":"你的光芒本身就足够耀眼，不必等谁来照亮；先做自己的太阳，你的价值不该押在「被爱」上。",
+    "穆桂英":"冲锋之前留一步，谋定后动的你比只凭冲劲的你强十倍；细节决定你能走多高，别忽略它。",
+    "班昭":"该亮剑时别谦虚，你值得被更多人看见；低调是修养，但该展示实力的时候，千万别藏。",
+    "上官婉儿":"偶尔放下算计，做个简单开心的人；你不用时时刻刻都那么聪明，松弛一点，反而更迷人。"
+  },
+
+  // 你的能量词（按人物名，结果卡顶部标签）
+  keywords: {
+    "李白":["自由","才华","不羁"],
+    "诸葛亮":["谋略","责任","周全"],
+    "秦始皇":["魄力","开创","掌控"],
+    "项羽":["肝胆","骄傲","热血"],
+    "苏轼":["豁达","通透","有趣"],
+    "岳飞":["忠诚","担当","铁骨"],
+    "成吉思汗":["野心","开拓","征服"],
+    "康熙":["沉稳","格局","隐忍"],
+    "武则天":["清醒","野心","强大"],
+    "李清照":["细腻","深情","才情"],
+    "花木兰":["坚韧","担当","独立"],
+    "王昭君":["温柔","成全","大义"],
+    "杨玉环":["爱美","浪漫","光芒"],
+    "穆桂英":["果敢","领导","斗志"],
+    "班昭":["沉静","实力","有料"],
+    "上官婉儿":["机敏","情商","才华"]
+  },
+
+  // 一句话，说穿你（按人物名，结果卡高亮引用）
+  punchline: {
+    "李白":"你不是不合群，你只是还没遇到那个能接住你自由的人。",
+    "诸葛亮":"你累，不是因为事多，是因为你把所有人的事，都当成了自己的事。",
+    "秦始皇":"你从不怕得罪人，因为你更怕平庸。",
+    "项羽":"你输给别人的，从来不是能力，是你放不下的骄傲。",
+    "苏轼":"你把苦日子过成了诗，却没人看见你半夜一个人熬。",
+    "岳飞":"你太重承诺，重到忘了自己也是个会累的人。",
+    "成吉思汗":"你跑得比谁都快，却把最该陪的人落在了身后。",
+    "康熙":"你什么都忍，最后连自己的委屈都忍没了。",
+    "武则天":"你不是心狠，你是太清楚，没人会替你扛。",
+    "李清照":"你不是矫情，是感受太深，一句话就能在心里掀起一场雨。",
+    "花木兰":"你总说「我没事」，其实你只是习惯了没人替你扛。",
+    "王昭君":"你太懂事，懂事到忘了问自己一句：我愿意吗。",
+    "杨玉环":"你美了一辈子，却很少为自己活过一次。",
+    "穆桂英":"你越难越来劲，是因为你从不肯认输——哪怕是跟自己。",
+    "班昭":"你有真本事，却总差那一步：敢不敢大声说出来。",
+    "上官婉儿":"你看人太准，准到忘了自己也是那个会累的人。"
+  },
+
+  // 放到今天，你就是（按人物名，结果卡展示）
+  modern: {
+    "李白":"那个说走就走的数字游民——钱可以少赚，日子不能憋屈。",
+    "诸葛亮":"那个把活儿全揽自己身上的项目负责人，强到没人觉得你也需要帮忙。",
+    "秦始皇":"那个从 0 到 1 的创业者，别人笑你疯，只有你在下一盘大棋。",
+    "项羽":"那个为兄弟两肋插刀、心里却比谁都脆的仗义大哥。",
+    "苏轼":"那个被裁了还能笑着发圈「终于可以去旅行了」的人。",
+    "岳飞":"那个 deadline 前绝不掉链子、答应的事拼了命也要做到的靠谱同事。",
+    "成吉思汗":"那个停不下来的卷王，事业越做越大，家却越回越少。",
+    "康熙":"那个年少当家、早早扛起全家重担的长子长女。",
+    "武则天":"那个在全是男人的会议室里，把方案拍在桌上的人。",
+    "李清照":"那个把朋友圈写成散文、深夜会被一句歌词破防的人。",
+    "花木兰":"那个平时温柔、一遇事就顶上去、全家都靠你的姐姐。",
+    "王昭君":"那个为了大家好、什么委屈都自己咽的「好人」。",
+    "杨玉环":"那个把生活过成 vlog、美到让人羡慕，却常怀疑自己值不值得被爱的人。",
+    "穆桂英":"那个越被质疑越想证明自己、能带团队打硬仗的女 leader。",
+    "班昭":"那个闷头出活、从不邀功，却次次惊艳全场的低调大神。",
+    "上官婉儿":"那个八面玲珑、什么局都 hold 住，却偶尔想「不装了」的社交达人。"
+  },
+
+  // 八个维度的能力小板块描述（结果卡「能力小板块」按人物 top3 维度展示）
+  dimDesc: {
+    "谋略":"看得远、想得深，凡事算三步",
+    "果敢":"该出手时就出手，绝不犹豫",
+    "才华":"学什么都快，自带灵气",
+    "气度":"容得下人，沉得住气",
+    "坚韧":"扛得住事，打不倒",
+    "浪漫":"把日子过出诗意",
+    "仁爱":"心软又暖，会照顾人",
+    "独立":"自己的路自己走，不靠谁"
+  },
+
+  // 共同底色（按人物名，结果卡展示）
+  base: {
+    "李白":"你们骨子里都有股「不想按别人规矩活」的劲儿，自由对你们来说，比安稳更重要。",
+    "诸葛亮":"你们内核都是「这事儿交给我你放心」的人，责任感重，凡事想在前头。",
+    "秦始皇":"你们都是「不信命、要自己说了算」的人，天生要强，认定的事一定做成。",
+    "项羽":"你们都是重情重义、把面子和情分看得比命还重的人。",
+    "苏轼":"你们都有一种「再难也要笑着过」的底色，天塌下来也能自嘲两句。",
+    "岳飞":"你们都是认死理、重承诺的人，认定的人和事，再难也守到底。",
+    "成吉思汗":"你们骨子里都关着一头停不下来的狼，越是不可能，越想去闯。",
+    "康熙":"你们都是少年老成、能忍能扛的人，闷声把大事一件件办成。",
+    "武则天":"你们都有股「我的命我自己做主」的狠劲，从不指望谁来拯救。",
+    "李清照":"你们都是感情极深、感受极细的人，爱恨都浓烈到极致。",
+    "花木兰":"你们都是关键时刻一个人扛起所有的担当型人格。",
+    "王昭君":"你们都有「为了大局先委屈自己」的懂事和柔软。",
+    "杨玉环":"你们都把「美」当成活着的底气，追求极致的美好。",
+    "穆桂英":"你们都是越难越来劲、越被看轻越要证明自己的人。",
+    "班昭":"你们都是「靠实力不靠关系」的踏实人，沉得下心做真事。",
+    "上官婉儿":"你们都是情商高、看人看事极准的聪明人，什么局都拿得住。"
+  },
+
+  // 隐藏天赋（按人物名）
+  hidden: {
+    "李白":"你把情绪酿成创作的能力——你心里那些翻腾，一旦落成文字或作品，就是别人求不来的灵气。",
+    "诸葛亮":"你把混乱理成系统的能力——再乱的摊子，到你手里都能被安排得明明白白。",
+    "秦始皇":"你把不可能变成现实的能力——别人只敢想，你敢干，而且能真干成。",
+    "项羽":"你让人死心塌地跟随的魅力——你的真诚和仗义，是最高级的人格号召力。",
+    "苏轼":"你把苦日子过出滋味的能力——你身上有种「越倒霉越通透」的天赋。",
+    "岳飞":"你让人无条件信任的能力——只要答应你，别人就愿意把后背交给你。",
+    "成吉思汗":"你把散沙聚成铁军的能力——你天生会带人，能把一群人拧成一股绳。",
+    "康熙":"你在最乱局面里稳住阵脚的能力——越是风浪，你越冷静。",
+    "武则天":"你在绝境翻盘的能力——越是没人看好，你越能杀出一条血路。",
+    "李清照":"你把细微感受写成作品的能力——你的一字一句，都能戳中人心。",
+    "花木兰":"你温柔外表下的爆发力——平时不显山露水，关键时刻惊艳所有人。",
+    "王昭君":"你用柔软化解冲突的能力——硬碰硬解决不了的事，你能用温柔化开。",
+    "杨玉环":"你把生活过成艺术的能力——再普通的日子，你也能过出仪式感。",
+    "穆桂英":"你带团队打硬仗的能力——你是天生的 leader，越难越有号召力。",
+    "班昭":"你沉下心来把一件事做透的能力——你坐得住冷板凳，这是稀缺天赋。",
+    "上官婉儿":"你在复杂关系里游刃有余的能力——多难搞的人，你都能处得舒服。"
+  },
+
+  // 长期优势（按人物名）
+  strength: {
+    "李白":"你的长期优势是「不可替代的创造力」——流水线能复制技能，却复制不了你的灵气。",
+    "诸葛亮":"你的长期优势是「靠谱到让人安心」——这个时代最缺的不是聪明，是把事交给你就放心。",
+    "秦始皇":"你的长期优势是「敢为天下先的执行力」——你想到就能做到，这是稀缺的破局力。",
+    "项羽":"你的长期优势是「一呼百应的人格魅力」——真心换真心，你的人脉是铁打的。",
+    "苏轼":"你的长期优势是「打不倒的复原力」——你跌得再狠，都能爬起来，而且一次比一次通透。",
+    "岳飞":"你的长期优势是「说到做到的信用」——信用是你最值钱的资产，时间越久越值钱。",
+    "成吉思汗":"你的长期优势是「开疆拓土的冲劲」——你天生适合去闯新领域、开拓新局面。",
+    "康熙":"你的长期优势是「笑到最后的定力」——你不争一时，争的是最后赢。",
+    "武则天":"你的长期优势是「清醒到可怕的目标感」——你从不会被情绪带偏，永远知道自己要什么。",
+    "李清照":"你的长期优势是「打动人心的表达力」——你的感受力和表达力，能做出真正有共鸣的内容。",
+    "花木兰":"你的长期优势是「关键时刻扛得住」——越是紧要关头，你越靠得住。",
+    "王昭君":"你的长期优势是「让人舒服的共情力」——有你在的地方，人和人的关系都顺了。",
+    "杨玉环":"你的长期优势是「点亮生活的审美力」——你的品味和美感，能把你带到更高的圈层。",
+    "穆桂英":"你的长期优势是「越挫越勇的斗志」——压力越大，你爆发出的能量越大。",
+    "班昭":"你的长期优势是「厚积薄发的专业力」——你积累的每一点，都在为未来铺路。",
+    "上官婉儿":"你的长期优势是「八面玲珑的适应力」——放到任何环境，你都能快速站稳。"
+  },
+
+  // 盲点与风险提醒（按人物名）
+  blindspot: {
+    "李白":"你最大的盲点是「用自由当逃避」——怕被管就干脆不做，最后才华还在，事没成。",
+    "诸葛亮":"你最大的盲点是「太能扛、不肯借力」——把所有人扛在肩上，最后把自己累垮。",
+    "秦始皇":"你最大的盲点是「刚极易折、听不进劝」——太独断，容易把身边人推开。",
+    "项羽":"你最大的盲点是「太骄傲、太好面子」——关键一步放不下身段，满盘皆输。",
+    "苏轼":"你最大的盲点是「用豁达麻痹自己」——该较真的时候也看开，反而错失该争取的。",
+    "岳飞":"你最大的盲点是「为别人燃尽自己」——忠诚到底，却忘了自己也需要被照顾。",
+    "成吉思汗":"你最大的盲点是「跑太快、丢下身边人」——事业成了，家却散了。",
+    "康熙":"你最大的盲点是「太能忍、把情绪压死」——憋久了，身体和心理会反噬。",
+    "武则天":"你最大的盲点是「高处不胜寒」——太强，反而把柔软藏得太深，无人可依。",
+    "李清照":"你最大的盲点是「太敏感、太入戏」——别人的一句话都能在心里掀起巨浪。",
+    "花木兰":"你最大的盲点是「逞强、不喊累」——硬扛到底，最后把自己耗干。",
+    "王昭君":"你最大的盲点是「成全别人、委屈自己」——太懂事，把自己活没了。",
+    "杨玉环":"你最大的盲点是「价值全押在被爱上」——没人爱时，你就觉得自己一无是处。",
+    "穆桂英":"你最大的盲点是「冲太猛、忽略细节」——气势有余，谋定后动不足。",
+    "班昭":"你最大的盲点是「太低调、不争不抢」——实力被埋没，错失该得的。",
+    "上官婉儿":"你最大的盲点是「活得太累、太会算计」——时刻绷着，忘了松弛下来的自己。"
+  },
+
+  // 不足之处（按人物名，顺着人物轨迹）
+  shortcoming: {
+    "李白":"李白一生最该补的，是「把才华落地」——他缺的不是天赋，是把喜欢的事做成一份能持续下去的事业。",
+    "诸葛亮":"诸葛亮一生最该补的，是「学会放手」——他若能早点分权借力，也许能走得更远。",
+    "秦始皇":"秦始皇一生最该补的，是「听得进逆耳忠言」——他的铁腕成了大事，也断了他的身后。",
+    "项羽":"项羽一生最该补的，是「低得下头」——他若能过鸿门宴那一关，历史会改写。",
+    "苏轼":"苏轼一生最该补的，是「该争则争」——他的豁达成就了他，也让他错过了一些该攥住的机会。",
+    "岳飞":"岳飞一生最该补的，是「为自己留一条退路」——他的忠义千古，却没守住自己。",
+    "成吉思汗":"成吉思汗一生最该补的，是「停下脚步陪陪家人」——他征服了世界，却亏欠了身边人。",
+    "康熙":"康熙一生最该补的，是「给情绪一个出口」——他忍了一辈子，心上的担子从没放下过。",
+    "武则天":"武则天一生最该补的，是「偶尔示弱」——她的强撑起了一切，也让她孤独到老。",
+    "李清照":"李清照一生最该补的，是「给情绪装层滤网」——她的敏感是天赋，也成了她的煎熬。",
+    "花木兰":"花木兰一生最该补的，是「承认自己也会累」——她扛起全家，却没人问过她累不累。",
+    "王昭君":"王昭君一生最该补的，是「为自己活一次」——她成全了大局，唯独委屈了自己。",
+    "杨玉环":"杨玉环一生最该补的，是「把命运握在自己手里」——她美了一生，却没为自己做主。",
+    "穆桂英":"穆桂英一生最该补的，是「谋定而后动」——她的勇猛够了，再多一分谋划会更可怕。",
+    "班昭":"班昭一生最该补的，是「该出头时别藏着」——她的才学足够，只差一次主动亮剑。",
+    "上官婉儿":"上官婉儿一生最该补的，是「偶尔做回简单的自己」——她太会做人，却忘了做自己。"
+  },
+
+  // 更好的选择（按人物名，顺着轨迹给建议）
+  betterChoice: {
+    "李白":"把热爱做成一件能持续产出的事，让自由变成选择权，而不是逃避的借口。",
+    "诸葛亮":"早点学会授权借力，把你的聪明用在最该用的地方，别一个人硬扛。",
+    "秦始皇":"关键时刻主动听一句反对意见，柔一点，反而能走得更远、更稳。",
+    "项羽":"在骄傲上头的那一刻，逼自己慢半拍、多听一句。",
+    "苏轼":"该较真的事别轻易看开，你的豁达该用在「扛过之后」，不是「提前放弃」。",
+    "岳飞":"把「责任」和「自我」放上同一架天平，先把自己也算进去。",
+    "成吉思汗":"在往前冲的时候，偶尔回头看看被你落下的家人。",
+    "康熙":"给情绪找一个出口，别把所有委屈都压进心里。",
+    "武则天":"把柔软留给几个值得的人，示弱不是失败，是另一种强大。",
+    "李清照":"给敏感装一层滤网，把温柔留给值得的人。",
+    "花木兰":"累了就说，被照顾一点都不丢人。",
+    "王昭君":"偶尔把自己放到第一位，你的温柔，先分一点给自己。",
+    "杨玉环":"先做自己的太阳，你的价值不必等谁来照亮。",
+    "穆桂英":"冲锋之前多留一步，谋定而后动的你，比只凭冲劲强十倍。",
+    "班昭":"该亮剑时别谦虚，你的实力值得被更多人看见。",
+    "上官婉儿":"偶尔放下算计，做个简单开心的人，松弛一点反而更迷人。"
+  },
+
+  // 24 道情境题：每个选项 d 是 dims 的索引
+  questions: [
+    {text:"周末临时多了半天空闲，你更想？", opts:[
+      {t:"约上好友出去走走、聊聊天", d:6},{t:"一个人待着，看剧 / 看书 / 整理", d:7},
+      {t:"临时起意来场说走就走的小旅行", d:5},{t:"把拖了很久的正事一口气办掉", d:4},
+      {t:"做点有创意的小事", d:2}]},
+    {text:"面对一个高挑战、高风险的机会，你？", opts:[
+      {t:"先把利弊想清楚再决定", d:0},{t:"敢赌就赌，机会不等人", d:1},
+      {t:"看能不能让大家都满意再定", d:6},{t:"只要是自己真正想做的就冲", d:7},
+      {t:"先评估清楚自己能不能扛得住", d:4}]},
+    {text:"团队意见分歧时，你通常？", opts:[
+      {t:"梳理逻辑，找出最优解说服大家", d:0},{t:"果断拍板，定了就执行", d:1},
+      {t:"先照顾情绪，大家舒服了再谈事", d:6},{t:"坚持自己的判断，不被带偏", d:7},
+      {t:"让一步，只要大方向对", d:3}]},
+    {text:"你更享受哪种被夸？", opts:[
+      {t:"「你好有想法」", d:0},{t:"「你好有魄力」", d:1},
+      {t:"「你好有才」", d:2},{t:"「你好温柔」", d:6},
+      {t:"「你格局真大」", d:3}]},
+    {text:"遇到很大的困难时，你？", opts:[
+      {t:"拆解问题，一步步找突破口", d:0},{t:"硬扛到底，绝不认输", d:4},
+      {t:"先调整心态，相信总会过去", d:5},{t:"找信任的人倾诉分担", d:6},
+      {t:"豁出去，背水一战", d:1}]},
+    {text:"你的理想生活更像？", opts:[
+      {t:"事业有成、运筹帷幄", d:0},{t:"自由自在、做喜欢的事", d:7},
+      {t:"诗酒趁年华、浪漫过一生", d:5},{t:"家人朋友都在、岁月静好", d:6},
+      {t:"被敬重、有地位有分量", d:3}]},
+    {text:"你希望别人对你的第一印象是？", opts:[
+      {t:"沉稳靠谱、有格局", d:3},{t:"敢想敢做、有冲劲", d:1},
+      {t:"才华横溢、有灵气", d:2},{t:"温柔好相处、有亲和力", d:6},
+      {t:"独立清醒、有主见", d:7}]},
+    {text:"面对背叛或误解，你？", opts:[
+      {t:"冷静分析，该反击就反击", d:0},{t:"不纠缠，直接翻篇", d:3},
+      {t:"会难过很久，但心里不记仇", d:6},{t:"靠自己站起来，不再依赖", d:7},
+      {t:"把委屈咽下，继续向前", d:4}]},
+    {text:"旅行你更喜欢？", opts:[
+      {t:"做好攻略，玩得明明白白", d:0},{t:"说走就走，随遇而安", d:5},
+      {t:"一个人去探索未知", d:7},{t:"和喜欢的人一起，去哪都行", d:6},
+      {t:"一路拍照记录、捕捉灵感", d:2}]},
+    {text:"你身上最突出的特质是？", opts:[
+      {t:"想得深、看得远", d:0},{t:"天不怕地不怕", d:1},
+      {t:"有才华有审美", d:2},{t:"抗压能力特别强", d:4},
+      {t:"浪漫、有生活情趣", d:5}]},
+    {text:"关于「坚持」这件事，你？", opts:[
+      {t:"认定目标就死磕到底", d:4},{t:"会灵活调整，不钻牛角尖", d:0},
+      {t:"热爱的事自然能坚持", d:5},{t:"为了在乎的人能坚持很久", d:6},
+      {t:"能忍常人所不能忍", d:3}]},
+    {text:"你更愿意为哪种事付出？", opts:[
+      {t:"理想和信仰", d:5},{t:"家人和朋友", d:6},
+      {t:"事业和抱负", d:1},{t:"自由和自我", d:7},
+      {t:"才华和创作", d:2}]},
+    {text:"如果穿越回古代，你觉得自己更适合？", opts:[
+      {t:"运筹帷幄的谋士", d:0},{t:"征战沙场的将军", d:1},
+      {t:"吟诗作赋的才子才女", d:2},{t:"受人爱戴的一方之主", d:3},
+      {t:"悬壶济世的医者", d:6}]},
+    {text:"你的朋友圈更像？", opts:[
+      {t:"偶尔分享深度思考", d:0},{t:"很少发，一发就是大事", d:1},
+      {t:"发好看的图、好听的歌", d:2},{t:"记录生活的小确幸", d:5},
+      {t:"晒和家人朋友的合照", d:6}]},
+    {text:"面对不喜欢又必须做的事，你？", opts:[
+      {t:"想办法提高效率赶紧做完", d:0},{t:"硬着头皮干，干完拉倒", d:4},
+      {t:"给自己找点乐子，苦中作乐", d:5},{t:"尽量找人一起分担", d:6},
+      {t:"要么不做，要做就立刻干完", d:1}]},
+    {text:"你更看重一段关系里的？", opts:[
+      {t:"舒服自在、彼此尊重", d:3},{t:"灵魂共鸣、聊得来", d:5},
+      {t:"靠得住、能共患难", d:4},{t:"被理解、被温柔以待", d:6},
+      {t:"各自独立、相互成就", d:7}]},
+    {text:"做重大决定时，你最怕？", opts:[
+      {t:"信息不全、判断失误", d:0},{t:"错过机会、后悔没试", d:1},
+      {t:"失去自由、被人束缚", d:7},{t:"伤了在意的人", d:6},
+      {t:"失去生活的诗意", d:5}]},
+    {text:"你的「高光时刻」更像？", opts:[
+      {t:"力挽狂澜、carry 全场", d:0},{t:"一鸣惊人、技惊四座", d:2},
+      {t:"敢为人先、第一个上", d:1},{t:"被众人认可、有口皆碑", d:3},
+      {t:"被人真心感谢", d:6}]},
+    {text:"如果只能选一种「超能力」，你选？", opts:[
+      {t:"读心术", d:0},{t:"无所畏惧", d:1},
+      {t:"让世界变美的创造力", d:2},{t:"治愈别人的能力", d:6},
+      {t:"回到最美好时光的能力", d:5}]},
+    {text:"你更认同哪种人生信条？", opts:[
+      {t:"「谋定而后动」", d:0},{t:"「人生能有几回搏」", d:1},
+      {t:"「生活不止眼前的苟且」", d:5},{t:"「此心安处是吾乡」", d:6},
+      {t:"「海纳百川，有容乃大」", d:3}]},
+    {text:"独处时你常做什么？", opts:[
+      {t:"复盘、规划、思考", d:0},{t:"学习新东西、充实自己", d:4},
+      {t:"做点有创意的事", d:2},{t:"放空、享受当下", d:5},
+      {t:"给在乎的人准备点小惊喜", d:6}]},
+    {text:"处理冲突时你倾向于？", opts:[
+      {t:"摆事实讲道理", d:0},{t:"直接摊牌、快刀斩乱麻", d:1},
+      {t:"退一步海阔天空", d:3},{t:"先照顾对方情绪", d:6},
+      {t:"坚持底线，不轻易妥协", d:7}]},
+    {text:"你希望十年后的自己？", opts:[
+      {t:"有成就、有话语权", d:3},{t:"自由、做自己", d:7},
+      {t:"依然浪漫、眼里有光", d:5},{t:"温暖、被爱包围", d:6},
+      {t:"有智慧、看透世事", d:0}]},
+    {text:"最后，选一个最能代表你的字？", opts:[
+      {t:"智", d:0},{t:"勇", d:1},
+      {t:"美", d:2},{t:"暖", d:6},
+      {t:"容", d:3}]},
+  ]
+};
+
+/* =====================================================================
+   引擎（换皮肤不改这里）
+   ===================================================================== */
+const dims = CONFIG.dims;
+const dimCount = dims.length;
+let gender = 'all';
+let answers = [];      // 每题选择的选项下标
+let userRaw = new Array(dimCount).fill(0);
+let curQ = 0;
+
+// 每个维度在题库中出现的次数（用于归一化）
+const dimFreq = new Array(dimCount).fill(0);
+CONFIG.questions.forEach(q => q.opts.forEach(o => { dimFreq[o.d]++; }));
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function enterTest(){
+  const v = document.getElementById('codeInput').value.trim();
+  const errEl = document.getElementById('codeErr');
+  const ok = (v === CONFIG.accessCode);
+  if(ok){ errEl.textContent=''; show('screen-gender'); }
+  else { errEl.textContent = '访问码不正确，请重试'; }
+}
+document.getElementById('codeInput').addEventListener('keydown', e=>{ if(e.key==='Enter') enterTest(); });
+
+function setGender(g){
+  gender = g;
+  answers = []; userRaw = new Array(dimCount).fill(0); curQ = 0;
+  show('screen-quiz');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = CONFIG.questions[curQ];
+  document.getElementById('qCount').textContent = `第 ${curQ+1} / ${CONFIG.questions.length} 题`;
+  document.getElementById('progressFill').style.width = ((curQ)/CONFIG.questions.length*100)+'%';
+  document.getElementById('qText').textContent = q.text;
+  const box = document.getElementById('qOptions');
+  box.innerHTML = '';
+  const labels = ['A','B','C','D','E'];
+  q.opts.forEach((o, i)=>{
+    const b = document.createElement('button');
+    b.className = 'opt' + (answers[curQ]===i ? ' sel':'');
+    b.innerHTML = `<span class="tag">${labels[i]}</span>${o.t}`;
+    b.onclick = ()=>{ selectOption(i); };
+    box.appendChild(b);
+  });
+  document.getElementById('btnPrev').style.visibility = curQ===0 ? 'hidden':'visible';
+  document.getElementById('btnNext').textContent = curQ===CONFIG.questions.length-1 ? '看结果':'下一题';
+}
+
+function selectOption(i){
+  const prev = answers[curQ];
+  if(prev !== undefined){ userRaw[CONFIG.questions[curQ].opts[prev].d]--; }
+  answers[curQ] = i;
+  userRaw[CONFIG.questions[curQ].opts[i].d]++;
+  renderQuestion();
+}
+
+function nextQuestion(){
+  if(answers[curQ] === undefined){ return; }  // 需先选
+  if(curQ < CONFIG.questions.length-1){
+    curQ++;
+    document.getElementById('progressFill').style.width = ((curQ)/CONFIG.questions.length*100)+'%';
+    renderQuestion();
+  } else {
+    computeResult();
+  }
+}
+
+function prevQuestion(){
+  if(curQ > 0){ curQ--; renderQuestion(); }
+}
+
+function normalizedUser(){
+  // 每维归一化到 0-100（按该维出现次数）
+  return dims.map((_, i)=> Math.round( (userRaw[i] / (dimFreq[i]||1)) * 100 ));
+}
+
+function computeResult(){
+  const u = normalizedUser();
+  const pool = CONFIG.figures.filter(f => gender==='all' || f.gender===gender);
+  let best = null, bestSim = -Infinity;
+  pool.forEach(f=>{
+    let dot=0, mu=0, mf=0;
+    for(let i=0;i<dimCount;i++){
+      dot += u[i]*f.dims[i]; mu += u[i]*u[i]; mf += f.dims[i]*f.dims[i];
+    }
+    const sim = dot / (Math.sqrt(mu)*Math.sqrt(mf) || 1);
+    if(sim > bestSim){ bestSim = sim; best = f; }
+  });
+  renderResult(best, u, pool);
+}
+
+function topDims(vec, n=2){
+  return vec.map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v).slice(0,n).map(x=>x.i);
+}
+
+function renderResult(fig, u, pool){
+  const head = document.getElementById('resultHead');
+  const tags = topDims(u,3).map(i=>dims[i]).map(d=>`<span>${d}</span>`).join('');
+  head.innerHTML = `
+    <div class="brand">你的历史原型是</div>
+    <div class="fig-name">${fig.name}</div>
+    <div class="fig-tag">${fig.tagline}</div>
+    <div class="dim-tags">${tags}</div>`;
+  show('screen-result');
+  drawCard(fig, u);
+}
+
+/* ================= 结果卡 canvas 渲染 ================= */
+function wrapLines(ctx, text, maxWidth){
+  const lines = []; let cur = '';
+  for(const ch of text){
+    if(ctx.measureText(cur+ch).width > maxWidth && cur){
+      lines.push(cur); cur = ch;
+    } else cur += ch;
+  }
+  if(cur) lines.push(cur);
+  return lines;
+}
+
+function drawRadar(ctx, cx, cy, r, userVec, figVec){
+  const n = dimCount;
+  const angle = i => -Math.PI/2 + i*2*Math.PI/n;
+  const pt = (i, rr) => [cx + Math.cos(angle(i))*rr, cy + Math.sin(angle(i))*rr];
+
+  ctx.strokeStyle = 'rgba(212,175,55,.25)';
+  ctx.lineWidth = 1;
+  for(let ring=1; ring<=3; ring++){
+    ctx.beginPath();
+    for(let i=0;i<n;i++){ const [x,y]=pt(i, r*ring/3); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+    ctx.closePath(); ctx.stroke();
+  }
+  for(let i=0;i<n;i++){
+    const [x,y]=pt(i,r);
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y);
+    ctx.strokeStyle='rgba(212,175,55,.35)'; ctx.stroke();
+  }
+  ctx.fillStyle = '#e8ddc2'; ctx.font = '13px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  for(let i=0;i<n;i++){
+    const [x,y]=pt(i, r+20);
+    ctx.fillText(dims[i], x, y);
+  }
+  ctx.strokeStyle = '#d4af37'; ctx.setLineDash([5,4]); ctx.lineWidth=1.6;
+  ctx.beginPath();
+  for(let i=0;i<n;i++){ const [x,y]=pt(i, r*figVec[i]/100); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.closePath(); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(212,175,55,.35)'; ctx.strokeStyle = '#d4af37'; ctx.lineWidth=2;
+  ctx.beginPath();
+  for(let i=0;i<n;i++){ const [x,y]=pt(i, r*userVec[i]/100); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+}
+
+function drawCard(fig, u){
+  const W = 750;
+  const padX = 48;
+  const c = document.getElementById('resultCanvas');
+  const ctx = c.getContext('2d');
+
+  const measure = (text, font, maxW) => {
+    ctx.font = font;
+    return wrapLines(ctx, text, maxW);
+  };
+
+  const titleFont = '800 38px "PingFang SC","Microsoft YaHei",sans-serif';
+  const nameFont  = '900 60px "PingFang SC","Microsoft YaHei",sans-serif';
+  const tagFont   = 'italic 22px "PingFang SC","Microsoft YaHei",sans-serif';
+  const secFont   = '800 27px "PingFang SC","Microsoft YaHei",sans-serif';
+  const bodyFont  = '21px "PingFang SC","Microsoft YaHei",sans-serif';
+  const bodyMaxW = W - padX*2;
+  const bodyLH = 33;
+  const secTitleH = 42;
+  const secBodyPad = 6;
+  const secGap = 24;
+
+  const tagLines    = measure(fig.tagline, tagFont, W-120);
+  const kws = (CONFIG.keywords && CONFIG.keywords[fig.name]) || [];
+  const punch = (CONFIG.punchline && CONFIG.punchline[fig.name]) || '';
+  const punchFont = 'italic 26px "PingFang SC","Microsoft YaHei",sans-serif';
+  const punchLines = punch ? measure(punch, punchFont, W - padX*2 - 28) : [];
+  // 能力小板块：按人物自身最强 3 维，用 dimDesc 生成三行小板块
+  const figTop = topDims(fig.dims, 3);
+  const facetLines = [];
+  figTop.forEach(i => {
+    measure('· ' + dims[i] + '：' + (CONFIG.dimDesc[dims[i]]||''), bodyFont, bodyMaxW)
+      .forEach(l => facetLines.push(l));
+  });
+
+  const sections = [
+    ['「 共同底色 」', measure(CONFIG.base[fig.name]||'', bodyFont, bodyMaxW)],
+    ['「 人物画像 」', measure(fig.portrait, bodyFont, bodyMaxW)],
+    ['「 能力小板块 」', facetLines],
+    ['「 隐藏天赋 」', measure(CONFIG.hidden[fig.name]||'', bodyFont, bodyMaxW)],
+    ['「 长期优势 」', measure(CONFIG.strength[fig.name]||'', bodyFont, bodyMaxW)],
+    ['「 你们哪里像 」', measure(fig.alike, bodyFont, bodyMaxW)],
+    ['「 TA 的一生 」', measure(fig.life, bodyFont, bodyMaxW)],
+    ['「 像你这类人，后来怎么样了 」', measure(fig.fate, bodyFont, bodyMaxW)],
+    ['「 放到今天，你就是 」', measure(CONFIG.modern[fig.name]||'', bodyFont, bodyMaxW)],
+    ['「 顺着轨迹，你的不足之处 」', measure(CONFIG.shortcoming[fig.name]||'', bodyFont, bodyMaxW)],
+    ['「 盲点与风险提醒 」', measure(CONFIG.blindspot[fig.name]||'', bodyFont, bodyMaxW)],
+    ['「 更好的选择 」', measure(CONFIG.betterChoice[fig.name]||'', bodyFont, bodyMaxW)],
+    ['「 给你的建议 」', measure(CONFIG.advice[fig.name]||'', bodyFont, bodyMaxW)],
+  ];
+  const lineLines = fig.lines.map(l=>measure(l, bodyFont, bodyMaxW));
+
+  const radarR = 140;
+  const radarH = radarR*2 + 60;
+
+  // —— 先量文字高度，确定 canvas 总高 ——
+  let y = 78;
+  y += 46;                            // title 行
+  y += 64;                            // 人物名
+  y += tagLines.length*32 + 28;       // tagline
+  if(kws.length){ y += 42 + 22; }     // 能量词标签
+  if(punch){ y += 26 + punchLines.length*38 + 32; }  // 一句话说穿你
+  const radarCy = y + radarR + 40;
+  y += radarH + 26;                   // 雷达图区域
+  sections.forEach(s=>{ y += secTitleH + secBodyPad + s[1].length*bodyLH + secGap; });
+  y += secTitleH + 6;                 // 三句台词标题
+  lineLines.forEach(ll=>{ y += ll.length*bodyLH + 6; });
+  y += 76;                            // footer + 底部留白
+
+  const H = Math.max(Math.ceil(y + 90), 1500);
+  c.width = W; c.height = H;
+
+  // —— 绘制 ——
+  const bg = ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,'#2a1a1a'); bg.addColorStop(0.55,'#3a2420'); bg.addColorStop(1,'#2a1a1a');
+  ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
+
+  ctx.fillStyle = 'rgba(212,175,55,.9)';
+  ctx.fillRect(padX, 40, 3, 90);
+  ctx.fillRect(W-padX-3, 40, 3, 90);
+
+  let ty = 78;
+  ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+
+  ctx.fillStyle = '#c9bdaa'; ctx.font = titleFont;
+  ctx.fillText(CONFIG.title, W/2, ty); ty += 46;
+
+  ctx.fillStyle = '#f0e9dc'; ctx.font = nameFont;
+  ctx.fillText(fig.name, W/2, ty); ty += 64;
+
+  ctx.fillStyle = '#d4af37'; ctx.font = tagFont;
+  tagLines.forEach(l=>{ ctx.fillText(l, W/2, ty); ty += 32; });
+  ty += 28;
+
+  // 能量词标签（可晒的社交标签）
+  if(kws.length){
+    const kwFont = '800 23px "PingFang SC","Microsoft YaHei",sans-serif';
+    const kwH = 42, pad = 15, gap = 12, radius = 21;
+    ctx.font = kwFont;
+    const widths = kws.map(k=>ctx.measureText(k).width + pad*2);
+    const totalW = widths.reduce((a,b)=>a+b,0) + gap*(kws.length-1);
+    let kx = (W - totalW)/2;
+    kws.forEach((k,i)=>{
+      const w = widths[i];
+      ctx.beginPath();
+      ctx.moveTo(kx+radius, ty);
+      ctx.arcTo(kx+w, ty, kx+w, ty+kwH, radius);
+      ctx.arcTo(kx+w, ty+kwH, kx, ty+kwH, radius);
+      ctx.arcTo(kx, ty+kwH, kx, ty, radius);
+      ctx.arcTo(kx, ty, kx+w, ty, radius);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(212,175,55,.14)';
+      ctx.fill();
+      ctx.strokeStyle = '#d4af37'; ctx.lineWidth = 1.4; ctx.stroke();
+      ctx.fillStyle = '#f2e9d8'; ctx.font = kwFont;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(k, kx + w/2, ty + kwH/2 + 1);
+      kx += w + gap;
+    });
+    ty += kwH + 22;
+  }
+
+  // 一句话，说穿你（高亮金句）
+  if(punch){
+    ty += 26;
+    ctx.textAlign='center';
+    ctx.fillStyle = '#d4af37';
+    ctx.font = '22px "PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.fillText('❝', W/2, ty - 6); ty += 4;
+    ctx.fillStyle = '#f4e9d2';
+    ctx.font = punchFont;
+    punchLines.forEach(l=>{ ctx.fillText(l, W/2, ty); ty += 38; });
+    ty += 24;
+  }
+
+  // 雷达图（用户向量按最强维度缩放到满格，突出个人峰值）
+  const uShow = (()=>{ const m = Math.max(...u, 1); return u.map(v=>Math.round(v/m*100)); })();
+  const rcY = ty + radarR + 40;
+  drawRadar(ctx, W/2, rcY, radarR, uShow, fig.dims);
+  ty = rcY + radarR + 40 + 26;
+
+  // 分节绘制
+  const drawSec = (title, linesArr) => {
+    ctx.textAlign='left';
+    ctx.fillStyle = '#d4af37';
+    ctx.font = secFont;
+    ctx.fillText(title, padX, ty); ty += secTitleH + secBodyPad;
+    ctx.fillStyle = '#f0e9dc';
+    ctx.font = bodyFont;
+    linesArr.forEach(l=>{ ctx.fillText(l, padX, ty); ty += bodyLH; });
+    ty += secGap;
+  };
+  sections.forEach(s=>drawSec(s[0], s[1]));
+
+  ctx.fillStyle = '#d4af37'; ctx.font = secFont; ctx.textAlign='left';
+  ctx.fillText('「 三句台词 」', padX, ty); ty += secTitleH + 6;
+  ctx.fillStyle = '#f0e9dc'; ctx.font = bodyFont;
+  fig.lines.forEach(l=>{
+    const ls = measure(l, bodyFont, bodyMaxW);
+    ls.forEach(s=>{ ctx.fillText('· ' + s, padX, ty); ty += bodyLH; });
+    ty += 6;
+  });
+
+  ty += 22;
+  ctx.textAlign='center';
+  ctx.fillStyle = '#c9bdaa'; ctx.font = '18px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText('长按图片保存 · 分享给朋友测测 TA 像谁', W/2, ty);
+
+  c.dataset.fig = fig.name;
+}
+
+function saveImage(){
+  const c = document.getElementById('resultCanvas');
+  const a = document.createElement('a');
+  a.href = c.toDataURL('image/png');
+  a.download = '历史人格解析-' + (c.dataset.fig||'结果') + '.png';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+function restart(){
+  answers = []; userRaw = new Array(dimCount).fill(0); curQ = 0;
+  show('screen-quiz'); renderQuestion();
+}
+function backToGender(){ show('screen-gender'); }
+</script>
+</body>
+</html>
