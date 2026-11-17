@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>你在别人眼里是什么人</title>
+<style>
+  :root{
+    --bg:#f2eef9; --ink:#2a2440; --gold:#8b5cf6; --gold2:#a78bfa;
+    --card:#ffffff; --muted:#8b87a0;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg); color:var(--ink);
+    min-height:100vh;
+    background-image:radial-gradient(circle at 20% 10%, rgba(139,92,246,.07), transparent 40%),
+                     radial-gradient(circle at 80% 90%, rgba(236,72,153,.08), transparent 40%);
+  }
+  .screen{display:none; min-height:100vh; padding:24px 20px 48px;}
+  .screen.active{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+  .wrap{max-width:520px; margin:0 auto;}
+
+  .brand{text-align:center; color:var(--muted); font-size:12px; letter-spacing:2px; margin:10px 0 4px;}
+  .title{text-align:center; font-size:24px; font-weight:800; letter-spacing:1px; line-height:1.45; margin:6px 0 2px;}
+  .subtitle{text-align:center; color:var(--muted); font-size:14px; margin-bottom:22px;}
+  .hook{text-align:center; font-size:14px; line-height:1.8; color:#5d5470; margin:0 0 18px;}
+  .rule-note{text-align:center; color:#b9b2cc; font-size:11px; margin-top:20px;}
+
+  .card{background:var(--card); border-radius:18px; padding:28px 22px; box-shadow:0 8px 30px rgba(42,26,26,.08);}
+
+  .btn{display:block; width:100%; padding:15px; border:none; border-radius:14px; font-size:17px; font-weight:700;
+       cursor:pointer; text-align:center; transition:transform .08s ease, opacity .15s ease;}
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:linear-gradient(135deg,#8b5cf6,#a78bfa); color:#fff;}
+  .btn-ghost{background:#f0ecf9; color:var(--ink);}
+  .btn+.btn{margin-top:12px;}
+
+  .code-input{width:100%; padding:16px; font-size:26px; text-align:center; letter-spacing:12px; border:2px solid #e6e0f0;
+    border-radius:14px; outline:none; background:#fff; color:var(--ink); margin-bottom:16px;}
+  .code-input:focus{border-color:var(--gold);}
+  .err{color:#c0392b; font-size:13px; text-align:center; min-height:18px; margin-bottom:8px;}
+
+  .gender-row{display:flex; gap:12px; margin-top:8px;}
+  .gender-row .btn{flex:1; padding:18px 8px; font-size:16px;}
+
+  .progress-bar{height:6px; background:#ece6f5; border-radius:3px; overflow:hidden; margin:6px 0 22px;}
+  .progress-fill{height:100%; background:linear-gradient(90deg,var(--gold),var(--gold2)); transition:width .3s ease;}
+  .q-count{text-align:center; color:var(--muted); font-size:13px; margin-bottom:16px;}
+  .q-text{font-size:20px; font-weight:700; line-height:1.5; margin-bottom:24px; text-align:center;}
+  .opt{display:block; width:100%; text-align:left; padding:15px 16px; margin-bottom:12px; border:1.5px solid #e6e0f0;
+    border-radius:14px; background:#fff; font-size:16px; line-height:1.45; cursor:pointer; transition:all .15s ease;}
+  .opt:active{transform:scale(.99);}
+  .opt.sel{border-color:var(--gold); background:#f7f2fe;}
+  .opt .tag{color:var(--gold); font-weight:800; margin-right:8px;}
+  .quiz-nav{display:flex; gap:12px; margin-top:10px;}
+  .quiz-nav .btn{flex:1;}
+
+  .result-head{text-align:center; margin-bottom:8px;}
+  .result-head .fig-name{font-size:34px; font-weight:900; letter-spacing:2px; margin:6px 0 2px;}
+  .result-head .fig-tag{color:var(--gold); font-style:italic; font-size:15px; margin-bottom:4px;}
+  .result-head .dim-tags{margin:10px 0 2px;}
+  .result-head .dim-tags span{display:inline-block; background:#f7f2fe; color:var(--gold); border:1px solid #e3d7f7;
+    border-radius:20px; padding:4px 12px; font-size:13px; margin:3px 4px;}
+
+  .canvas-wrap{margin:18px auto 8px; text-align:center;}
+  canvas{max-width:100%; height:auto; border-radius:16px; box-shadow:0 10px 34px rgba(42,26,26,.14);}
+  .save-tip{text-align:center; color:var(--muted); font-size:12px; margin:10px 0 16px;}
+  .back-link{display:block; text-align:center; color:var(--gold); font-size:14px; margin-top:18px; cursor:pointer; text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<!-- ============ 门禁屏 ============ -->
+<div class="screen active" id="screen-gate">
+  <div class="wrap">
+    <div class="brand">社交人格 · 仅供娱乐</div>
+    <div class="title">你在别人眼里是什么人</div>
+    <div class="subtitle">你的答案，藏着你没见过的自己</div>
+    <div class="card">
+      <div class="hook">你以为自己内向，别人可能觉得你高冷；你以为自己随和，别人可能觉得你藏着事。你在别人眼里，到底是个什么样的人？<br>回答这些生活里的选择，测出「别人看到的你」和「你以为的你」差多远。</div>
+      <input class="code-input" id="codeInput" inputmode="numeric" maxlength="8" placeholder="输入访问码" autocomplete="off">
+      <div class="err" id="codeErr"></div>
+      <button class="btn btn-primary" onclick="enterTest()">开始测试</button>
+    </div>
+    <div class="rule-note">非心理测评 · 非预测 · 结果仅供娱乐</div>
+  </div>
+</div>
+
+<!-- ============ 性别筛选屏 ============ -->
+<div class="screen" id="screen-gender">
+  <div class="wrap">
+    <div class="brand">社交人格 · 仅供娱乐</div>
+    <div class="title">你是谁</div>
+    <div class="subtitle">选一组，结果更贴合你</div>
+    <div class="card">
+      <div class="gender-row">
+        <button class="btn btn-ghost" onclick="setGender('f')">我是女生</button>
+        <button class="btn btn-ghost" onclick="setGender('m')">我是男生</button>
+        <button class="btn btn-ghost" onclick="setGender('all')">男女都行</button>
+      </div>
+    </div>
+    <div class="rule-note">性别只用于筛选结果池，不影响计分</div>
+  </div>
+</div>
+
+<!-- ============ 答题屏 ============ -->
+<div class="screen" id="screen-quiz">
+  <div class="wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="q-count" id="qCount"></div>
+    <div class="q-text" id="qText"></div>
+    <div id="qOptions"></div>
+    <div class="quiz-nav">
+      <button class="btn btn-ghost" id="btnPrev" onclick="prevQuestion()">上一题</button>
+      <button class="btn btn-primary" id="btnNext" onclick="nextQuestion()">下一题</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 结果屏 ============ -->
+<div class="screen" id="screen-result">
+  <div class="wrap">
+    <div class="result-head" id="resultHead"></div>
+    <div class="canvas-wrap"><canvas id="resultCanvas"></canvas></div>
+    <div class="save-tip">↑ 长按图片可保存到相册</div>
+    <button class="btn btn-primary" onclick="saveImage()">保存结果图</button>
+    <button class="btn btn-ghost" onclick="openUpsell()">解锁「性格进阶报告」</button>
+    <button class="btn btn-ghost" onclick="restart()">再测一次</button>
+    <div class="back-link" onclick="backToGender()">换一组重测</div>
+    <div class="rule-note">非心理测评 · 非预测 · 结果仅供娱乐 · 请勿用于任何决策</div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   配置区（换皮肤只改这里）
+   8 社交感知维度 + 8 主原型 + 24 题（每选项多维度加权加分）
+   ===================================================================== */
+const CONFIG = {
+  title: "你在别人眼里是什么人",
+  subtitle: "你的答案，藏着你没见过的自己",
+  accessCode: "2028",
+  upsellText: "如果这套说中了你，店铺里还有几套更走心的测试，陪你把自己看明白。",
+  upsellBtn: "去店里看看",
+  upsellUrl: "https://super588.github.io/persona-test/",
+  // 8 社交感知维度（索引 0-7）
+  dims: ["亲和度","可靠度","外放度","共情度","分寸感","松弛度","主导度","深厚度"],
+
+  // 8 主原型：dims 峰值对应自身维度
+  figures: [
+    {name:"人形暖宝宝型", gender:"all", tagline:"走到哪，气氛就暖到哪",
+     dims:[95,60,55,70,60,65,30,45],
+     summary:"别人眼里的你，是那种一出现气氛就变软的人。",
+     desc:"别人眼里的你，是走到哪都能把气氛焐热的人，谁跟你待着都放松。你最大的优势，是能让人卸下防备、愿意靠近。但你最容易被误解成「没脾气、什么都行」——其实你心里清楚得很，只是把锋利收起来了。",
+     talent:"在需要破冰、拉近关系、化解尴尬的场合最值钱——谈判、带新人、做社区、做服务。",
+     practice:["下次别人夸你时，别急着说「没有」，接住它说「谢谢」","试着主动向一个人提一次小请求，练习「被帮助」"],
+     careers:["社群运营（你天然能让人放松）","品牌公关（你的亲和是信任入口）","教育/培训（学生愿意靠近你）"]},
+    {name:"定海神针型", gender:"all", tagline:"有你在，大家就安心",
+     dims:[60,95,35,60,70,55,55,60],
+     summary:"别人眼里的你，是出了事第一个想到要去找的人。",
+     desc:"别人眼里的你，是那个「有你在就稳了」的人，出了事大家都先想到你。你最大的优势，是让人放心的能力，这比什么才华都值钱。但你也容易被误解成「天生就稳、不需要照顾」——其实你扛了很多，很少喊累。",
+     talent:"在需要信任背书的场景最值钱——项目管理、财务、医护、团队中坚。",
+     practice:["这周主动跟一个朋友说一次「我其实挺累的」，练习示弱","答应别人前，先停三秒问自己「我愿不愿意」"],
+     careers:["项目管理（有你在进度就稳）","金融/财务（信任是你的硬通货）","医护/法务（靠谱比才华更稀缺）"]},
+    {name:"气氛发动机型", gender:"all", tagline:"有你在，场子永远不冷",
+     dims:[55,40,95,55,45,65,65,40],
+     summary:"别人眼里的你，是场子冷下来第一个被指望救场的人。",
+     desc:"别人眼里的你，是场子的灵魂，有你在就不怕冷场。你最大的优势，是把陌生人变成熟人、把尴尬变成热闹。但你最容易被误解成「爱出风头、浮于表面」——其实热闹只是你的方式，不是你的全部。",
+     talent:"在需要点燃气氛、拉新、做影响力的场景最值钱——主持、销售、内容、活动策划。",
+     practice:["下次聚会，试着安静听完一个人把话说完再开口","每天留半小时独处，练习跟自己相处"],
+     careers:["活动策划（你天生会带气氛）","销售/BD（你能把冷场变热络）","内容/直播（感染力是你的杠杆）"]},
+    {name:"情绪接收器型", gender:"all", tagline:"跟你说完心事，人就舒坦",
+     dims:[60,55,35,95,55,50,30,60],
+     summary:"别人眼里的你，是能把心事放心交出去的那种人。",
+     desc:"别人眼里的你，是那个「跟你说完心事就舒坦」的人，总能接住别人的情绪。你最大的优势，是让人感到被理解，这是稀缺的信任感。但你最容易被误解成「永远温柔、不会累」——其实你接的情绪太多，自己也需要一个出口。",
+     talent:"在需要深度信任、用户洞察、沟通的场景最值钱——咨询、HR、客服、内容创作。",
+     practice:["下次听人倾诉，先问一句「你现在最需要我做什么」","每周给自己留一次「只听不说」的树洞时间"],
+     careers:["心理咨询/教练（你能接住情绪）","人力资源（你懂人）","用户研究/客服（你听见别人听不见的）"]},
+    {name:"人形边界感型", gender:"all", tagline:"相处起来，特别舒服",
+     dims:[55,60,35,50,95,55,45,55],
+     summary:"别人眼里的你，是相处起来特别舒服、从不让谁难堪的人。",
+     desc:"别人眼里的你，是相处起来特别舒服、从不越界的人，跟你打交道不用设防。你最大的优势，是那份难得的「懂进退」，让关系长久不腻。但你最容易被误解成「疏离、不够热络」——其实你不是冷，是太清楚分寸在哪。",
+     talent:"在需要长期关系、商务合作、高信任场景最值钱——销售、公关、管理、专业服务。",
+     practice:["对真正想亲近的人，主动暴露一件自己的小糗事","练习一次「直接说不」，不绕弯"],
+     careers:["商务谈判（你有分寸、不吃亏）","管理岗（你让关系不腻）","专业服务（律师/咨询，边界感是专业）"]},
+    {name:"反内耗体质型", gender:"all", tagline:"待在一起，不用装",
+     dims:[60,50,60,50,50,95,30,45],
+     summary:"别人眼里的你，是待在一起不用装、想说什么就说的人。",
+     desc:"别人眼里的你，是特别松弛、不较劲的人，跟你在一起不累。你最大的优势，是把很多事看轻，不被无谓的事消耗。但你最容易被误解成「不上心、不认真」——其实你在真正重要的事上，比谁都较真。",
+     talent:"在高压、多变、需要情绪稳定的场景最值钱——创业、急救、危机处理、长期项目。",
+     practice:["挑一件你一直拖着的事，今天只做 5 分钟","记录一下「哪些事其实根本不值得你在意」"],
+     careers:["创业/自由职业（你扛得住波动）","危机公关（你不慌）","长线项目（你耗得起）"]},
+    {name:"自带节奏型", gender:"all", tagline:"一群人拿不定时，都看你",
+     dims:[45,55,70,45,55,40,95,50],
+     summary:"别人眼里的你，是一群人说不好时最后都看你的人。",
+     desc:"别人眼里的你，是那个有主见、能拿事的人，一群人说不好时最后都看你。你最大的优势，是敢拍板、能带头，让事情往前走。但你最容易被误解成「强势、爱掌控」——其实你是没人站出来的时候才顶上的。",
+     talent:"在需要决策、带队、推动进展的场景最值钱——管理、创业、项目负责、策略。",
+     practice:["下次做决定前，先问一句「别人怎么看」","把「听我说」换成「你怎么看」，练倾听"],
+     careers:["团队管理（你能带队）","创业（你能拍板）","产品/策略（你能推动）"]},
+    {name:"有内容但慢热型", gender:"all", tagline:"越处越有意思",
+     dims:[40,50,30,50,55,45,35,95],
+     summary:"别人眼里的你，是越处越有意思、越聊越觉得藏得深的人。",
+     desc:"别人眼里的你，是越处越有意思的人，不熟时安静，熟了才发现有深度。你最大的优势，是那种让人「想一层层了解你」的吸引力。但你最容易被误解成「高冷、难接近」——其实你只是慢热，打开之后完全是另一个人。",
+     talent:"在需要深度、判断、长期信任的场景最值钱——研究、写作、投资、专业顾问。",
+     practice:["主动向一个新认识的人，多分享一句「我今天在想什么」","把想说的一个观点，先对一个人讲出来"],
+     careers:["研究/分析（你沉得下心）","写作/内容（你有深度）","投资/顾问（你的判断值钱）"]},
+  ],
+
+  // 8 维逐条解读：每维高/中/低三档，档位 = [低, 中, 高]
+  // 每档 {see: 别人可能这样看你, know: 但你自己知道}
+  dimTiers: {
+    "亲和度": [
+      {see:"有点距离感，第一次见面不太敢搭话。", know:"你只是慢热，熟起来完全是另一个人。"},
+      {see:"看着好接近，但也没那么自来熟。", know:"你是先看人再决定要不要打开，不是对谁都热。"},
+      {see:"一出现大家就松一口气，好说话、没架子。", know:"你只是把很多情绪自己咽了，不想让人为难。"}],
+    "可靠度": [
+      {see:"有点难预测，说好的事也可能临时变。", know:"你不是不靠谱，只是不喜欢被条条框框捆着。"},
+      {see:"大事靠得住，小事有点随性。", know:"你在乎的你会拼全力，不在乎的就懒得装。"},
+      {see:"有事找你最放心，交代的事不会掉。", know:"你常常背地里多扛了很多，才换来这份「放心」。"}],
+    "外放度": [
+      {see:"安静、话少，不太好接近。", know:"你心里话很多，只是没遇见值得说的人。"},
+      {see:"话不多不少，熟了才放得开。", know:"你只是挑人、挑场合，不是不会聊。"},
+      {see:"走到哪都能把气氛带起来，天生自来熟。", know:"热闹背后，你也会累，也想要个安静的地方。"}],
+    "共情度": [
+      {see:"就事论事，不太会安慰人。", know:"你心里是在意的，只是不擅长用嘴说出来。"},
+      {see:"讲道理的时候多过讲感情。", know:"你不是冷，只是觉得「解决问题」比「陪着哭」更有用。"},
+      {see:"特别会接情绪，跟你说完心事就松快。", know:"你听得多、懂太多，自己的情绪反而没人接。"}],
+    "分寸感": [
+      {see:"有点自来熟，玩笑容易开过头。", know:"你不是没边界，是太想把气氛搞热，反而没拿捏好。"},
+      {see:"偶尔自来熟，但大体有边界。", know:"你对喜欢的人会不自觉地更近一点。"},
+      {see:"相处特别舒服，从不越界、不让人难堪。", know:"这份「懂进退」是你反复在心里掂量出来的。"}],
+    "松弛度": [
+      {see:"要求高、绷得紧，不太好「糊弄」。", know:"你不是故意苛刻，只是想把事做好、怕出错。"},
+      {see:"平时挺随和，某些事上又很较真。", know:"你在乎的事，你没法假装无所谓。"},
+      {see:"特别好相处，不较劲、不端着。", know:"你只是不想为小事消耗自己，大事你比谁都上心。"}],
+    "主导度": [
+      {see:"比较随和，习惯配合别人。", know:"你不是没想法，只是更在意大家舒服，不想起冲突。"},
+      {see:"看情况，该上时上，该让时让。", know:"你不是没主见，是分得清「什么时候值得争」。"},
+      {see:"有主见、能拿事，一群人里往往是你在带节奏。", know:"你不是爱出风头，只是没人站出来时你会忍不住顶上。"}],
+    "深厚度": [
+      {see:"一眼看到底，简单直接不绕弯。", know:"你只是不喜欢装，简单是你选择，不是没内容。"},
+      {see:"直给的时候多，但偶尔露一手让人意外。", know:"你的深度只在信得过的人面前展现。"},
+      {see:"有内容、藏得深，越处越有意思。", know:"你不是故意藏着，只是没到那个点，不想把心掏出来。"}],
+  },
+
+  // 隐藏面（按第二高维度 0-7 对应 8 维，100字左右，体现"别人没看到的那一面"）
+  hiddenSide: [
+    "别人只看到你随和好说话，其实你心里有座别人进不去的岛。你藏着一套自己的想法，只是从不急着让人知道——这份「反差」才是你真正的吸引力。",
+    "别人觉得你轻松自在，其实你比谁都在意「靠不靠得住」。你嘴上说着无所谓，背地里早把事情想好了三遍，只是不愿让人看见你较真。",
+    "别人以为你安静内敛，其实你在熟悉的人面前，比谁都放得开。你的热闹，只留给走进你世界的人。",
+    "别人觉得你理性、不情绪化，其实你敏感得出奇，特别容易共情别人的难。你只是把这份柔软藏在了冷静的外壳下。",
+    "别人以为你大大咧咧、没心没肺，其实你比谁都细，谁尴尬了、谁被冷落了，你全都看在眼里。热闹只是你的表面，分寸才是你的底。",
+    "别人觉得你没要求、什么都行，其实你心里有把尺子，只是不轻易亮出来。你在真正重要的事上，比谁都较真。",
+    "别人以为你只会温柔地配合，其实你心里很有主意，只是不轻易亮出来。关键时候，你反而是那个能拍板的人。",
+    "别人以为你简单直给，其实你心里装着一片海，只是没遇见值得倾诉的人。你的深度，从不轻易示人。",
+  ],
+
+  // 24 题：每题 4 选项，每选项给 2-3 个维度加分，adds=[[维度索引, 分值], ...]
+  questions: [
+    {text:"周末突然空出一整天，你第一反应是——", opts:[
+      {t:"约人出来，人多才有意思", adds:[[2,3],[6,1],[0,1]]},
+      {t:"找个安静地方待着，谁也别找我", adds:[[7,2],[5,1],[4,1]]},
+      {t:"先把欠下的事处理掉，不然不踏实", adds:[[1,3],[4,1],[7,1]]},
+      {t:"看谁找我，再决定怎么过", adds:[[0,2],[3,1],[4,1]]}]},
+    {text:"群里突然冷场了，你通常会——", opts:[
+      {t:"赶紧抛个话题，把气氛救回来", adds:[[2,3],[0,1],[5,1]]},
+      {t:"静静等别人先开口", adds:[[4,2],[7,2],[5,1]]},
+      {t:"发个表情包，带一带节奏", adds:[[6,2],[2,2],[0,1]]},
+      {t:"私聊那个平时最聊得来的人", adds:[[3,2],[4,1],[0,1]]}]},
+    {text:"朋友深夜打电话来哭，你第一反应是——", opts:[
+      {t:"先听他说完，不急着打断", adds:[[3,3],[1,1],[7,1]]},
+      {t:"直接问「需要我做什么」", adds:[[1,2],[6,1],[4,1]]},
+      {t:"说点自己的糗事，想逗他笑", adds:[[2,2],[0,1],[5,1]]},
+      {t:"劝他先睡，有事明天再说", adds:[[4,2],[7,1],[5,1]]}]},
+    {text:"团队聚餐点菜，你通常——", opts:[
+      {t:"让大家各自报一个想吃的", adds:[[3,2],[6,1],[0,1]]},
+      {t:"直接点几个招牌菜，省得纠结", adds:[[6,3],[1,1],[2,1]]},
+      {t:"说「随便，你们点」，吃啥都行", adds:[[5,2],[0,1],[7,1]]},
+      {t:"先问清楚谁有忌口，再下单", adds:[[3,2],[4,2],[1,1]]}]},
+    {text:"地铁上撞见不太熟的同事，你会——", opts:[
+      {t:"主动打招呼，聊两句近况", adds:[[2,2],[0,2],[6,1]]},
+      {t:"点头示意一下，就各自待着", adds:[[4,2],[7,1],[5,1]]},
+      {t:"装没看见，避免尴尬", adds:[[7,2],[4,1],[5,1]]},
+      {t:"问他最近忙不忙、累不累", adds:[[0,2],[3,2],[2,1]]}]},
+    {text:"被人当面夸「你太靠谱了」，你会——", opts:[
+      {t:"笑着说「没有啦」，不好意思", adds:[[0,2],[5,1],[4,1]]},
+      {t:"认真回一句「应该的」", adds:[[1,3],[4,1],[7,1]]},
+      {t:"反过来夸对方", adds:[[3,2],[0,2],[2,1]]},
+      {t:"有点不自在，赶紧岔开话题", adds:[[5,2],[7,1],[4,1]]}]},
+    {text:"朋友约好时间又迟到半小时，你——", opts:[
+      {t:"有点烦，但等他来了再说", adds:[[4,2],[1,1],[7,1]]},
+      {t:"直接发消息问「到哪了」", adds:[[6,2],[1,2],[2,1]]},
+      {t:"无所谓，玩会儿手机等他", adds:[[5,3],[0,1]]},
+      {t:"他一来先关心是不是路上有事", adds:[[3,3],[0,1],[5,1]]}]},
+    {text:"发朋友圈，你更倾向于——", opts:[
+      {t:"分享生活照片和日常", adds:[[2,2],[0,2],[5,1]]},
+      {t:"只发重要节点，从不刷屏", adds:[[4,2],[7,2],[1,1]]},
+      {t:"转发有共鸣的内容，不露自己", adds:[[3,2],[7,2],[0,1]]},
+      {t:"几乎不发，看看就好", adds:[[7,3],[4,1],[5,1]]}]},
+    {text:"朋友借你的钱一直没还，你——", opts:[
+      {t:"直接提醒他该还了", adds:[[6,2],[1,2],[4,1]]},
+      {t:"不好意思开口，先等等看", adds:[[0,2],[5,1],[7,1]]},
+      {t:"算了，当送他了", adds:[[5,2],[0,2],[3,1]]},
+      {t:"找借口委婉提一提", adds:[[4,2],[7,1],[3,1]]}]},
+    {text:"陌生人突然找你搭话，你——", opts:[
+      {t:"自然接话，能聊就聊", adds:[[2,2],[0,2],[5,1]]},
+      {t:"礼貌但保持距离", adds:[[4,3],[1,1]]},
+      {t:"先判断对方到底想干嘛", adds:[[7,2],[6,1],[4,1]]},
+      {t:"简短回应，想快点结束", adds:[[5,2],[4,1],[7,1]]}]},
+    {text:"和别人意见不合，你通常——", opts:[
+      {t:"摆事实讲道理，非说清不可", adds:[[6,2],[1,2],[7,1]]},
+      {t:"先听对方说完，再反驳", adds:[[3,2],[4,2],[1,1]]},
+      {t:"算了，不争了，没意思", adds:[[5,2],[0,1],[7,1]]},
+      {t:"找共同点，各退一步", adds:[[3,2],[0,2],[4,1]]}]},
+    {text:"朋友失恋了找你，你会——", opts:[
+      {t:"陪他喝一杯，听他把苦水倒完", adds:[[3,3],[0,1],[2,1]]},
+      {t:"帮他分析这段感情哪里出了问题", adds:[[7,2],[6,1],[1,1]]},
+      {t:"说「分了也好，他配不上你」", adds:[[2,2],[6,2],[0,1]]},
+      {t:"拉他出去散心，转移注意力", adds:[[0,2],[2,2],[5,1]]}]},
+    {text:"聚会快散场，你通常是——", opts:[
+      {t:"张罗着送大家回家", adds:[[1,2],[6,1],[3,1]]},
+      {t:"帮着收拾残局、结账", adds:[[1,3],[4,1]]},
+      {t:"等大家都散了再慢慢走", adds:[[5,2],[0,1],[7,1]]},
+      {t:"抓住最后时间聊个痛快", adds:[[2,3],[0,1],[6,1]]}]},
+    {text:"收到一条暧昧消息，你会——", opts:[
+      {t:"直接问对方到底什么意思", adds:[[6,2],[1,2],[4,1]]},
+      {t:"当没看懂，正常聊", adds:[[4,2],[7,2],[5,1]]},
+      {t:"顺着暧昧一下，看对方反应", adds:[[2,2],[5,2],[0,1]]},
+      {t:"认真想想自己到底喜不喜欢", adds:[[7,2],[3,1],[4,1]]}]},
+    {text:"有人插你的队，你——", opts:[
+      {t:"直接说「请排队」", adds:[[6,3],[1,1],[2,1]]},
+      {t:"皱眉，但忍下来了", adds:[[7,2],[5,1],[4,1]]},
+      {t:"转头跟旁边人小声吐槽", adds:[[2,2],[0,1],[3,1]]},
+      {t:"好言好语提醒他排队", adds:[[4,2],[0,2],[1,1]]}]},
+    {text:"深夜一个人 emo 了，你——", opts:[
+      {t:"找人聊聊，说出来好受点", adds:[[2,2],[0,2],[3,1]]},
+      {t:"听歌发呆，自己慢慢消化", adds:[[7,3],[5,1]]},
+      {t:"写点东西，把情绪记下来", adds:[[7,2],[4,1],[1,1]]},
+      {t:"找点事做，忙起来就不想了", adds:[[1,2],[5,2],[6,1]]}]},
+    {text:"参加同学会，你——", opts:[
+      {t:"热情地和每个人打招呼", adds:[[2,3],[0,1],[5,1]]},
+      {t:"只跟关系好的那几个坐一起", adds:[[0,2],[4,1],[7,1]]},
+      {t:"主动张罗话题、组织游戏", adds:[[6,3],[2,1],[0,1]]},
+      {t:"听大家聊，偶尔插一句", adds:[[3,2],[7,1],[5,1]]}]},
+    {text:"被拉进一个陌生群，你——", opts:[
+      {t:"发个表情包冒个泡", adds:[[2,2],[0,2],[5,1]]},
+      {t:"默默看大家聊，先观察", adds:[[7,2],[4,2],[5,1]]},
+      {t:"问群主拉我进来干嘛", adds:[[6,2],[1,2],[4,1]]},
+      {t:"直接问「这干嘛的」", adds:[[6,2],[2,2],[1,1]]}]},
+    {text:"朋友找你借钱，你会——", opts:[
+      {t:"能借就借，不废话", adds:[[1,2],[0,2],[3,1]]},
+      {t:"问清楚用途，再决定借不借", adds:[[4,2],[7,2],[1,1]]},
+      {t:"委婉说自己手头也紧", adds:[[4,2],[5,1],[0,1]]},
+      {t:"直接说不借，不绕弯", adds:[[6,2],[1,2],[4,1]]}]},
+    {text:"计划好的旅行，朋友临时放鸽子，你——", opts:[
+      {t:"有点生气，直接说出来", adds:[[6,2],[2,2],[1,1]]},
+      {t:"算了，理解他，谁还没点事", adds:[[5,2],[3,2],[0,1]]},
+      {t:"问清楚到底是什么原因", adds:[[3,2],[4,2],[7,1]]},
+      {t:"一个人照去不误", adds:[[7,2],[5,1],[6,1]]}]},
+    {text:"被人当面夸「你长得真好看」，你——", opts:[
+      {t:"大方说声谢谢", adds:[[2,2],[5,2],[0,1]]},
+      {t:"谦虚说「没有没有」", adds:[[0,2],[4,1],[5,1]]},
+      {t:"开玩笑回敬一句", adds:[[2,2],[6,1],[0,1]]},
+      {t:"害羞得不知道怎么回", adds:[[7,2],[5,1],[0,1]]}]},
+    {text:"加班到很晚，你——", opts:[
+      {t:"想着明天的活怎么推进", adds:[[1,2],[6,1],[7,1]]},
+      {t:"跟同事吐槽几句", adds:[[2,2],[0,2],[3,1]]},
+      {t:"默默把活干完，不吭声", adds:[[1,3],[7,1],[4,1]]},
+      {t:"觉得累，但还能再撑一撑", adds:[[5,2],[1,1],[6,1]]}]},
+    {text:"到一个新环境，你通常——", opts:[
+      {t:"主动去认识新朋友", adds:[[2,3],[6,1],[0,1]]},
+      {t:"先观察，再慢慢靠近", adds:[[7,2],[4,2],[5,1]]},
+      {t:"等别人先来认识你", adds:[[5,2],[0,1],[7,1]]},
+      {t:"找看起来好说话的人聊", adds:[[3,2],[0,2],[2,1]]}]},
+    {text:"面对一个选择，你纠结时——", opts:[
+      {t:"列利弊，理性分析", adds:[[1,2],[7,2],[6,1]]},
+      {t:"问朋友意见，听听他们怎么说", adds:[[3,2],[0,2],[2,1]]},
+      {t:"凭直觉选一个，不纠结", adds:[[5,2],[6,1],[7,1]]},
+      {t:"拖一拖，说不定就不用选了", adds:[[5,2],[4,1],[7,1]]}]},
+  ]
+};
+
+/* =====================================================================
+   引擎（换皮肤不改这里）
+   ===================================================================== */
+const dims = CONFIG.dims;
+const dimCount = dims.length;
+let gender = 'all';
+let answers = [];      // 每题选择的选项下标
+let userRaw = new Array(dimCount).fill(0);
+let curQ = 0;
+
+// 理论最高分：每个维度在所有题中「每题该维最高加分」之和（动态计算）
+const theoryMax = new Array(dimCount).fill(0);
+CONFIG.questions.forEach(q => {
+  const perDim = new Array(dimCount).fill(0);
+  q.opts.forEach(o => o.adds.forEach(a => { perDim[a[0]] = Math.max(perDim[a[0]], a[1]); }));
+  for(let i=0;i<dimCount;i++) theoryMax[i] += perDim[i];
+});
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function enterTest(){
+  const v = document.getElementById('codeInput').value.trim();
+  const errEl = document.getElementById('codeErr');
+  if(v === CONFIG.accessCode){ errEl.textContent=''; show('screen-gender'); }
+  else { errEl.textContent = '访问码不正确，请重试'; }
+}
+document.getElementById('codeInput').addEventListener('keydown', e=>{ if(e.key==='Enter') enterTest(); });
+
+function setGender(g){
+  gender = g;
+  answers = []; userRaw = new Array(dimCount).fill(0); curQ = 0;
+  show('screen-quiz');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = CONFIG.questions[curQ];
+  document.getElementById('qCount').textContent = `第 ${curQ+1} / ${CONFIG.questions.length} 题`;
+  document.getElementById('progressFill').style.width = ((curQ)/CONFIG.questions.length*100)+'%';
+  document.getElementById('qText').textContent = q.text;
+  const box = document.getElementById('qOptions');
+  box.innerHTML = '';
+  const labels = ['A','B','C','D'];
+  q.opts.forEach((o, i)=>{
+    const b = document.createElement('button');
+    b.className = 'opt' + (answers[curQ]===i ? ' sel':'');
+    b.innerHTML = `<span class="tag">${labels[i]}</span>${o.t}`;
+    b.onclick = ()=>{ selectOption(i); };
+    box.appendChild(b);
+  });
+  document.getElementById('btnPrev').style.visibility = curQ===0 ? 'hidden':'visible';
+  document.getElementById('btnNext').textContent = curQ===CONFIG.questions.length-1 ? '看结果':'下一题';
+}
+
+function selectOption(i){
+  const q = CONFIG.questions[curQ];
+  const prev = answers[curQ];
+  if(prev !== undefined){ q.opts[prev].adds.forEach(a=>{ userRaw[a[0]] -= a[1]; }); }
+  answers[curQ] = i;
+  q.opts[i].adds.forEach(a=>{ userRaw[a[0]] += a[1]; });
+  renderQuestion();
+}
+
+function nextQuestion(){
+  if(answers[curQ] === undefined){ return; }
+  if(curQ < CONFIG.questions.length-1){
+    curQ++;
+    document.getElementById('progressFill').style.width = ((curQ)/CONFIG.questions.length*100)+'%';
+    renderQuestion();
+  } else {
+    computeResult();
+  }
+}
+
+function prevQuestion(){
+  if(curQ > 0){ curQ--; renderQuestion(); }
+}
+
+// 得分率（0-100）
+function scoreRate(){
+  return dims.map((_, i)=> Math.round( (userRaw[i] / (theoryMax[i]||1)) * 100 ));
+}
+
+// 分档：2=高(≥70) 1=中(40-69) 0=低(<40)
+function tier(rate){ return rate >= 70 ? 2 : (rate >= 40 ? 1 : 0); }
+const TIER_NAME = ['低','中','高'];
+
+function computeResult(){
+  const rates = scoreRate();
+  // 主维度 = 得分率最高；第二高 = 隐藏面
+  const idx = rates.map((r,i)=>({r,i})).sort((a,b)=>b.r-a.r);
+  const mainIdx = idx[0].i;
+  const secondIdx = idx[1].i;
+  const fig = CONFIG.figures[mainIdx];
+  renderResult(fig, rates, mainIdx, secondIdx);
+}
+
+function renderResult(fig, rates, mainIdx, secondIdx){
+  const head = document.getElementById('resultHead');
+  const topTags = rates.map((r,i)=>({r,i})).sort((a,b)=>b.r-a.r).slice(0,3).map(x=>dims[x.i]).map(d=>`<span>${d}</span>`).join('');
+  head.innerHTML = `
+    <div class="brand">你的社交原型是</div>
+    <div class="fig-name">${fig.name}</div>
+    <div class="fig-tag">${fig.tagline}</div>
+    <div class="dim-tags">${topTags}</div>`;
+  show('screen-result');
+  drawCard(fig, rates, mainIdx, secondIdx);
+}
+
+/* ================= 结果卡 canvas 渲染 ================= */
+function wrapLines(ctx, text, maxWidth){
+  const lines = []; let cur = '';
+  for(const ch of text){
+    if(ctx.measureText(cur+ch).width > maxWidth && cur){
+      lines.push(cur); cur = ch;
+    } else cur += ch;
+  }
+  if(cur) lines.push(cur);
+  return lines;
+}
+
+function drawRadar(ctx, cx, cy, r, userVec, figVec){
+  const n = dimCount;
+  const angle = i => -Math.PI/2 + i*2*Math.PI/n;
+  const pt = (i, rr) => [cx + Math.cos(angle(i))*rr, cy + Math.sin(angle(i))*rr];
+
+  ctx.strokeStyle = 'rgba(167,139,250,.25)';
+  ctx.lineWidth = 1;
+  for(let ring=1; ring<=3; ring++){
+    ctx.beginPath();
+    for(let i=0;i<n;i++){ const [x,y]=pt(i, r*ring/3); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+    ctx.closePath(); ctx.stroke();
+  }
+  for(let i=0;i<n;i++){
+    const [x,y]=pt(i,r);
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y);
+    ctx.strokeStyle='rgba(167,139,250,.35)'; ctx.stroke();
+  }
+  ctx.fillStyle = '#cfc7e6'; ctx.font = '13px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  for(let i=0;i<n;i++){
+    const [x,y]=pt(i, r+20);
+    ctx.fillText(dims[i], x, y);
+  }
+  ctx.strokeStyle = '#a78bfa'; ctx.setLineDash([5,4]); ctx.lineWidth=1.6;
+  ctx.beginPath();
+  for(let i=0;i<n;i++){ const [x,y]=pt(i, r*figVec[i]/100); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.closePath(); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(167,139,250,.35)'; ctx.strokeStyle = '#a78bfa'; ctx.lineWidth=2;
+  ctx.beginPath();
+  for(let i=0;i<n;i++){ const [x,y]=pt(i, r*userVec[i]/100); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+}
+
+function drawCard(fig, rates, mainIdx, secondIdx){
+  const W = 750;
+  const padX = 48;
+  const c = document.getElementById('resultCanvas');
+  const ctx = c.getContext('2d');
+
+  const measure = (text, font, maxW) => {
+    ctx.font = font;
+    return wrapLines(ctx, text, maxW);
+  };
+
+  const titleFont = '800 38px "PingFang SC","Microsoft YaHei",sans-serif';
+  const nameFont  = '900 60px "PingFang SC","Microsoft YaHei",sans-serif';
+  const tagFont   = 'italic 22px "PingFang SC","Microsoft YaHei",sans-serif';
+  const secFont   = '800 27px "PingFang SC","Microsoft YaHei",sans-serif';
+  const bodyFont  = '21px "PingFang SC","Microsoft YaHei",sans-serif';
+  const bodyMaxW = W - padX*2;
+  const bodyLH = 33;
+  const secTitleH = 42;
+  const secBodyPad = 6;
+  const secGap = 24;
+
+  const tagLines = measure(fig.tagline, tagFont, W-120);
+
+  // 8 维逐条解读（每维按得分率分档，生成"维度名【档】别人看X。但你自己知道Y。"）
+  const dimLines = [];
+  rates.forEach((r, i)=>{
+    const t = tier(r);
+    const d = CONFIG.dimTiers[dims[i]][t];
+    const full = `${dims[i]}【${TIER_NAME[t]}】别人看：${d.see} 但你自己知道：${d.know}`;
+    measure('· '+full, bodyFont, bodyMaxW).forEach(l=>dimLines.push(l));
+  });
+
+  const sections = [
+    ['「 一句话总评 」', measure(fig.summary, bodyFont, bodyMaxW)],
+    ['「 你的社交原型 」', measure(fig.desc, bodyFont, bodyMaxW)],
+    ['「 8 个维度，逐条看透你 」', dimLines],
+    ['「 你可能没意识到的一面 」', measure(CONFIG.hiddenSide[secondIdx]||'', bodyFont, bodyMaxW)],
+    ['「 你的天赋解读 」', measure(fig.talent, bodyFont, bodyMaxW)],
+    ['「 练习建议 」', fig.practice.flatMap(p=>measure('· '+p, bodyFont, bodyMaxW))],
+    ['「 适合你的方向 」', fig.careers.flatMap(p=>measure('· '+p, bodyFont, bodyMaxW))],
+  ];
+
+  const radarR = 130;
+  const radarH = radarR*2 + 60;
+
+  // —— 先量文字高度 ——
+  let y = 78;
+  y += 46;
+  y += 64;
+  y += tagLines.length*32 + 28;
+  const radarCy = y + radarR + 40;
+  y += radarH + 26;
+  sections.forEach(s=>{ y += secTitleH + secBodyPad + s[1].length*bodyLH + secGap; });
+  y += 76 + 130;
+
+  const H = Math.max(Math.ceil(y + 90), 1600);
+  c.width = W; c.height = H;
+
+  // —— 绘制 ——
+  const bg = ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,'#241d3d'); bg.addColorStop(0.5,'#332757'); bg.addColorStop(1,'#241d3d');
+  ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
+
+  ctx.fillStyle = 'rgba(167,139,250,.9)';
+  ctx.fillRect(padX, 40, 3, 90);
+  ctx.fillRect(W-padX-3, 40, 3, 90);
+
+  let ty = 78;
+  ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+
+  ctx.fillStyle = '#b9b2cc'; ctx.font = titleFont;
+  ctx.fillText(CONFIG.title, W/2, ty); ty += 46;
+
+  ctx.fillStyle = '#f1ecfb'; ctx.font = nameFont;
+  ctx.fillText(fig.name, W/2, ty); ty += 64;
+
+  ctx.fillStyle = '#a78bfa'; ctx.font = tagFont;
+  tagLines.forEach(l=>{ ctx.fillText(l, W/2, ty); ty += 32; });
+  ty += 28;
+
+  // 雷达图
+  const uShow = (()=>{ const m = Math.max(...rates, 1); return rates.map(v=>Math.round(v/m*100)); })();
+  const rcY = ty + radarR + 40;
+  drawRadar(ctx, W/2, rcY, radarR, uShow, fig.dims);
+  ty = rcY + radarR + 40 + 26;
+
+  // 分节绘制
+  const drawSec = (title, linesArr) => {
+    ctx.textAlign='left';
+    ctx.fillStyle = '#a78bfa';
+    ctx.font = secFont;
+    ctx.fillText(title, padX, ty); ty += secTitleH + secBodyPad;
+    ctx.fillStyle = '#f1ecfb';
+    ctx.font = bodyFont;
+    linesArr.forEach(l=>{ ctx.fillText(l, padX, ty); ty += bodyLH; });
+    ty += secGap;
+  };
+  sections.forEach(s=>drawSec(s[0], s[1]));
+
+  ty += 22;
+  ctx.textAlign='center';
+
+  ctx.fillStyle = '#a78bfa'; ctx.font = '800 22px "PingFang SC","Microsoft YaHei",sans-serif';
+  const upLines = measure(CONFIG.upsellText||'', '800 22px "PingFang SC","Microsoft YaHei",sans-serif', W - padX*2 - 16);
+  upLines.forEach(l=>{ ctx.fillText(l, W/2, ty); ty += 32; });
+  ty += 10;
+  ctx.fillStyle = '#f1ecfb'; ctx.font = '16px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText(CONFIG.upsellBtn + ' →', W/2, ty); ty += 24;
+
+  ctx.fillStyle = '#b9b2cc'; ctx.font = '16px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText('长按图片可保存 · 把这份结果，留给未来的自己', W/2, ty);
+
+  c.dataset.fig = fig.name;
+}
+
+function openUpsell(){
+  if(CONFIG.upsellUrl){ window.open(CONFIG.upsellUrl, '_blank'); }
+}
+
+function saveImage(){
+  const c = document.getElementById('resultCanvas');
+  const a = document.createElement('a');
+  a.href = c.toDataURL('image/png');
+  a.download = '你在别人眼里是什么人-' + (c.dataset.fig||'结果') + '.png';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+function restart(){
+  answers = []; userRaw = new Array(dimCount).fill(0); curQ = 0;
+  show('screen-quiz'); renderQuestion();
+}
+function backToGender(){ show('screen-gender'); }
+</script>
+</body>
+</html>
