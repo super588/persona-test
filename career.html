@@ -1,0 +1,773 @@
+  // 20 道情境题：每个选项 d 是 dims 的索引（0冒险 1自驱 2决断 3抗压 4整合 5执行 6野心 7财务）
+  questions: [
+    {text:"如果现在辞职，你最担心的？", opts:[
+      {t:"稳定收入没了，心里没底", d:3},{t:"下一份还没着落", d:1},
+      {t:"怕自己其实没那么强", d:7},{t:"怕错过更好的平台", d:6}]},
+    {text:"一个能赚大钱但风险极高的机会摆在面前，你？", opts:[
+      {t:"想清楚就上，风险能算", d:0},{t:"先小成本试一下水", d:5},
+      {t:"拉人一起干，分担风险", d:4},{t:"太悬，还是稳稳来", d:3}]},
+    {text:"你更愿意跟什么样的人一起做事？", opts:[
+      {t:"有想法、能带我开眼界的", d:6},{t:"踏实肯干、说到做到的", d:5},
+      {t:"有资源、有门路的", d:4},{t:"凡事有商有量、不独断的", d:2}]},
+    {text:"如果公司半年不发工资但前景极好，你？", opts:[
+      {t:"赌一把，跟着熬", d:0},{t:"边熬边看，找后路", d:7},
+      {t:"撑不住，得先活下来", d:3},{t:"跟老板谈，争取股权", d:2}]},
+    {text:"你更享受哪种工作状态？", opts:[
+      {t:"自己定目标，自己往前冲", d:1},{t:"有人指方向，我负责干好", d:5},
+      {t:"团队一起，各有分工", d:4},{t:"目标明确，节奏稳定", d:3}]},
+    {text:"关于钱，你更认同？", opts:[
+      {t:"钱是赚出来的，不是省出来的", d:0},{t:"量入为出，心里才踏实", d:7},
+      {t:"会算账的人才能做成事", d:2},{t:"先谈钱，再谈理想", d:6}]},
+    {text:"没人监督你的时候，你会？", opts:[
+      {t:"自己给自己定计划", d:1},{t:"容易松懈，需要目标压着", d:3},
+      {t:"该干的还是干，习惯而已", d:5},{t:"先想清楚这事值不值得干", d:2}]},
+    {text:"你对「体制内/大厂」的态度是？", opts:[
+      {t:"好平台，能借力往上走", d:4},{t:"稳定，但也容易把人框死", d:3},
+      {t:"能学到东西就去", d:1},{t:"待不住，我想自己干", d:0}]},
+    {text:"如果创业失败、血本无归，你会？", opts:[
+      {t:"爬起来再干，不信邪", d:0},{t:"先打工回血，再找机会", d:7},
+      {t:"反思自己哪里错了", d:2},{t:"早点找合伙人就不至于了", d:4}]},
+    {text:"你更怕哪种人生？", opts:[
+      {t:"一辈子给别人打工，没有出头日", d:6},{t:"忙活一场，最后什么也没留下", d:1},
+      {t:"想干的都没干成", d:0},{t:"到了晚年没钱没保障", d:7}]},
+    {text:"一个想法别人都说不行，你会？", opts:[
+      {t:"自己试试才知道", d:0},{t:"先做成最小版本验证", d:5},
+      {t:"听听多数人的，再定", d:3},{t:"拉几个信得过的人评估", d:4}]},
+    {text:"你更擅长哪件事？", opts:[
+      {t:"把事做成、把结果交出来", d:5},{t:"把人聚起来、分工合作", d:4},
+      {t:"想清楚方向、做对决定", d:2},{t:"扛住压力、稳住军心", d:3}]},
+    {text:"你向往的工作方式是？", opts:[
+      {t:"自己定规则，想怎么干怎么干", d:0},{t:"固定节奏，下班就是自己的时间", d:3},
+      {t:"跟优秀的人一起干大事", d:6},{t:"做一件能长期深耕的事", d:5}]},
+    {text:"遇到「没人干过」的事，你？", opts:[
+      {t:"兴奋，正好抢个先", d:0},{t:"先研究别人怎么失败的", d:2},
+      {t:"照成熟经验来，稳一点", d:3},{t:"组个队，一起趟", d:4}]},
+    {text:"如果一个月没有收入，你会？", opts:[
+      {t:"慌，赶紧找工作", d:3},{t:"正好琢磨点自己的事", d:1},
+      {t:"有存款，能撑得住", d:7},{t:"找朋友介绍点活", d:4}]},
+    {text:"你更认同哪种活法？", opts:[
+      {t:"人生就是一场豪赌", d:0},{t:"稳步上升，踏实积累", d:3},
+      {t:"找到热爱，做到极致", d:5},{t:"多试几条路，总能通一条", d:6}]},
+    {text:"如果有人拉你一起创业，你最想先问？", opts:[
+      {t:"这事能赚多少、怎么分", d:7},{t:"团队靠不靠谱", d:4},
+      {t:"我要负责哪一块", d:5},{t:"失败了怎么办", d:3}]},
+    {text:"你最能容忍哪种风险？", opts:[
+      {t:"赔钱的风险", d:7},{t:"赔时间的风险", d:1},
+      {t:"赔面子的风险", d:0},{t:"赔机会的风险", d:6}]},
+    {text:"你觉得「成功」靠什么？", opts:[
+      {t:"选对方向，赢在起跑线", d:2},{t:"足够敢赌，抓住窗口期", d:0},
+      {t:"日复一日地执行", d:5},{t:"会整合资源、会借势", d:4}]},
+    {text:"最后，你对「自己创业」这件事？", opts:[
+      {t:"早晚要干，在等时机", d:6},{t:"已经在琢磨了", d:1},
+      {t:"除非稳了，否则不碰", d:3},{t:"我更想把一件事做精", d:5}]},
+  ]
+};
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>测你适合打工还是创业</title>
+<style>
+  :root{
+    --bg:#e9edf5; --ink:#16233b; --gold:#ff6b35; --gold2:#ff8c5a;
+    --card:#ffffff; --muted:#78859b;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg); color:var(--ink);
+    min-height:100vh;
+    background-image:radial-gradient(circle at 20% 10%, rgba(255,107,53,.06), transparent 40%),
+                     radial-gradient(circle at 80% 90%, rgba(15,107,216,.10), transparent 40%);
+  }
+  .screen{display:none; min-height:100vh; padding:24px 20px 48px;}
+  .screen.active{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+  .wrap{max-width:520px; margin:0 auto;}
+
+  .brand{text-align:center; color:var(--muted); font-size:12px; letter-spacing:2px; margin:10px 0 4px;}
+  .title{text-align:center; font-size:24px; font-weight:800; letter-spacing:1px; line-height:1.45; margin:6px 0 2px;}
+  .subtitle{text-align:center; color:var(--muted); font-size:14px; margin-bottom:22px;}
+  .hook{text-align:center; font-size:14px; line-height:1.8; color:#6b5d4d; margin:0 0 18px;}
+  .rule-note{text-align:center; color:#c9bdaa; font-size:11px; margin-top:20px;}
+
+  .card{background:var(--card); border-radius:18px; padding:28px 22px; box-shadow:0 8px 30px rgba(42,26,26,.08);}
+
+  .btn{display:block; width:100%; padding:15px; border:none; border-radius:14px; font-size:17px; font-weight:700;
+       cursor:pointer; text-align:center; transition:transform .08s ease, opacity .15s ease;}
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:linear-gradient(135deg,#ff6b35,#ff8c5a); color:#fff;}
+  .btn-ghost{background:#eef1f6; color:var(--ink);}
+  .btn+.btn{margin-top:12px;}
+
+  .code-input{width:100%; padding:16px; font-size:26px; text-align:center; letter-spacing:12px; border:2px solid #e6dccb;
+    border-radius:14px; outline:none; background:#fff; color:var(--ink); margin-bottom:16px;}
+  .code-input:focus{border-color:var(--gold);}
+  .err{color:#c0392b; font-size:13px; text-align:center; min-height:18px; margin-bottom:8px;}
+
+  .gender-row{display:flex; gap:12px; margin-top:8px;}
+  .gender-row .btn{flex:1; padding:18px 8px; font-size:16px;}
+
+  .progress-bar{height:6px; background:#efe6d8; border-radius:3px; overflow:hidden; margin:6px 0 22px;}
+  .progress-fill{height:100%; background:linear-gradient(90deg,var(--gold),var(--gold2)); transition:width .3s ease;}
+  .q-count{text-align:center; color:var(--muted); font-size:13px; margin-bottom:16px;}
+  .q-text{font-size:20px; font-weight:700; line-height:1.5; margin-bottom:24px; text-align:center;}
+  .opt{display:block; width:100%; text-align:left; padding:15px 16px; margin-bottom:12px; border:1.5px solid #e6dccb;
+    border-radius:14px; background:#fff; font-size:16px; line-height:1.45; cursor:pointer; transition:all .15s ease;}
+  .opt:active{transform:scale(.99);}
+  .opt.sel{border-color:var(--gold); background:#fbf3df;}
+  .opt .tag{color:var(--gold); font-weight:800; margin-right:8px;}
+  .quiz-nav{display:flex; gap:12px; margin-top:10px;}
+  .quiz-nav .btn{flex:1;}
+
+  .result-head{text-align:center; margin-bottom:8px;}
+  .result-head .fig-name{font-size:34px; font-weight:900; letter-spacing:2px; margin:6px 0 2px;}
+  .result-head .fig-tag{color:var(--gold); font-style:italic; font-size:15px; margin-bottom:4px;}
+  .result-head .dim-tags{margin:10px 0 2px;}
+  .result-head .dim-tags span{display:inline-block; background:#fbf3df; color:var(--gold); border:1px solid #ecd9a8;
+    border-radius:20px; padding:4px 12px; font-size:13px; margin:3px 4px;}
+
+  .canvas-wrap{margin:18px auto 8px; text-align:center;}
+  canvas{max-width:100%; height:auto; border-radius:16px; box-shadow:0 10px 34px rgba(42,26,26,.14);}
+  .save-tip{text-align:center; color:var(--muted); font-size:12px; margin:10px 0 16px;}
+  .back-link{display:block; text-align:center; color:var(--gold); font-size:14px; margin-top:18px; cursor:pointer; text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<!-- ============ 门禁屏 ============ -->
+<div class="screen active" id="screen-gate">
+  <div class="wrap">
+    <div class="brand">职业人格 · 仅供娱乐</div>
+    <div class="title">测你适合打工还是创业</div>
+    <div class="subtitle">你的答案，藏着你没敢承认的那条路</div>
+    <div class="card">
+      <div class="hook">有人天生就该坐办公室，有人注定要去闯一片天。你总在「安安稳稳打工」和「豁出去自己干」之间摇摆，其实你骨子里的性格，早就替你选好了答案。<br>回答这些问题，看透你真正适合的那条路。</div>
+      <input class="code-input" id="codeInput" inputmode="numeric" maxlength="8" placeholder="输入访问码" autocomplete="off">
+      <div class="err" id="codeErr"></div>
+      <button class="btn btn-primary" onclick="enterTest()">开始测试</button>
+    </div>
+    <div class="rule-note">非职业测评 · 非预测 · 结果仅供娱乐</div>
+  </div>
+</div>
+
+<!-- ============ 性别筛选屏 ============ -->
+<div class="screen" id="screen-gender">
+  <div class="wrap">
+    <div class="brand">职业人格 · 仅供娱乐</div>
+    <div class="title">你是谁</div>
+    <div class="subtitle">选一组，结果更贴合你</div>
+    <div class="card">
+      <div class="gender-row">
+        <button class="btn btn-ghost" onclick="setGender('f')">我是女生</button>
+        <button class="btn btn-ghost" onclick="setGender('m')">我是男生</button>
+        <button class="btn btn-ghost" onclick="setGender('all')">男女都行</button>
+      </div>
+    </div>
+    <div class="rule-note">性别只用于筛选结果池，不影响计分</div>
+  </div>
+</div>
+
+<!-- ============ 答题屏 ============ -->
+<div class="screen" id="screen-quiz">
+  <div class="wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="q-count" id="qCount"></div>
+    <div class="q-text" id="qText"></div>
+    <div id="qOptions"></div>
+    <div class="quiz-nav">
+      <button class="btn btn-ghost" id="btnPrev" onclick="prevQuestion()">上一题</button>
+      <button class="btn btn-primary" id="btnNext" onclick="nextQuestion()">下一题</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 结果屏 ============ -->
+<div class="screen" id="screen-result">
+  <div class="wrap">
+    <div class="result-head" id="resultHead"></div>
+    <div class="canvas-wrap"><canvas id="resultCanvas"></canvas></div>
+    <div class="save-tip">↑ 长按图片可保存到相册</div>
+    <button class="btn btn-primary" onclick="saveImage()">保存结果图</button>
+    <button class="btn btn-ghost" onclick="openUpsell()">解锁「职业进阶报告」</button>
+    <button class="btn btn-ghost" onclick="restart()">再测一次</button>
+    <div class="back-link" onclick="backToGender()">换一组重测</div>
+    <div class="rule-note">非职业测评 · 非预测 · 结果仅供娱乐 · 请勿用于任何投资决策</div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   配置区（换皮肤只改这里 —— 对象库 / 题库 / 文案 / 标题 / 访问码）
+   ===================================================================== */
+const CONFIG = {
+  title: "测你适合打工还是创业",
+  subtitle: "你的答案，藏着你没敢承认的那条路",
+  accessCode: "2027",
+  // 结尾商品引导（结果卡底部 + 结果屏按钮两处都读这里）
+  upsellText: "想知道你骨子里像哪位历史人物？",
+  upsellBtn: "解锁「历史人格原型」",
+  upsellUrl: "https://super588.github.io/persona-test/",
+  dims: ["冒险","自驱","决断","抗压","整合","执行","野心","财务"],
+
+  // 6 种职业人格：dims 顺序与上面 dims 一一对应（0-100）
+  // 字段：portrait=你的性格底色 / alike=别人眼里的你·真正的你 / life=你不肯让人看见的那一面 / fate=你这辈子最大的功课
+  figures: [
+    {name:"天生创业者", gender:"all", tagline:"老板命 · 天生就该自己干",
+     dims:[95,90,95,80,85,80,95,85],
+     portrait:"你身上有种「等不了」的劲儿——等不了别人安排，等不了机会上门，你只想自己动手把事情做起来。别人害怕不确定，你反而在不确�定里最兴奋。你天生不习惯被人管，更不习惯替别人打工，你的性子就注定了，你要自己说了算。",
+     alike:"别人看你，觉得你胆大、敢赌、天不怕地不怕。其实你只是比别人更早看明白一件事：打工是把命交给别人，创业是把命攥在自己手里。你宁愿自己扛结果，也不愿意替别人的决定背锅。",
+     life:"你藏得最深的，是你也会怕。怕自己孤注一掷之后输得精光，怕辜负跟着你干的人。你只是把这种怕，都化成了往前冲的力气。你越是不说，越是一个人扛下所有风险。",
+     fate:"你这辈子最大的功课，不是敢不敢冲，是学会「谋定而后动」。你的冲劲是你的天赋，但真正的创业者，是既有你的胆，又比常人多一份「把风险算清楚」的稳。敢冲的人很多，能活下来的，都是敢冲又会算的人。",
+     lines:["机会不等人，干了再说","我的路，我自己开","宁可自己扛，不替别人背锅"]},
+    {name:"职场精英", gender:"all", tagline:"大厂命 · 在体系里爬到顶",
+     dims:[35,75,75,80,85,90,85,80],
+     portrait:"你是个天生的「成事者」，但不是靠单打独斗，而是靠借力——你懂规则、会做人、能把资源组织起来，在成熟的组织里如鱼得水。你不排斥打工，因为你看得清：打工打得好，一样能站到很高的位置。你不是没野心，你是懂得把野心放在对的平台上。",
+     alike:"别人看你，觉得你稳重、靠谱、会来事。其实你心里那盘棋，下得比谁都大——你不是认命打工，你是把「打工」当成一条最快往上爬的梯子。你比谁都清楚，什么时候该出力，什么时候该隐忍。",
+     life:"你藏得最深的，是你偶尔也会想「要是自己干会怎样」。你会羡慕那些自由的人，可转头又觉得，稳定的平台给你的，正是你想要的确定性。你在这份纠结里，一次次选择了「稳」。",
+     fate:"你这辈子最大的功课，是别让「求稳」变成「不敢变」。平台能给你舞台，但永远给不了你完全的安全感。你真正的底气，不是待在一个好位置，而是你自己本身，值不值得更高的位置。",
+     lines:["在平台上，把自己磨成刀","稳，也是一种高级的野心","借力打力，才是高手"]},
+    {name:"创业合伙人", gender:"all", tagline:"二号位 · 最好的那根柱子",
+     dims:[65,80,70,85,80,90,80,75],
+     portrait:"你最适合的不是自己当老板，也不是一辈子当螺丝钉，而是站在一个值得追随的人身边，做那个「把想法变成现实」的人。你执行力极强、扛得住事、又愿意补位，你是一个团队里最值钱的那根柱子。别人负责想，你负责把事做成。",
+     alike:"别人看你，觉得你踏实、肯干、没什么野心。其实你的野心藏得很深——你不是不想出头，是你看得清楚：与其自己摸索着摔，不如跟着对的人，把一件事做成，自己也跟着水涨船高。",
+     life:"你藏得最深的，是你偶尔也会不服。你会想：凭什么我在前面拼命，光环却给了别人。可你又会劝自己：成事比出头重要。这份隐忍，是你的成熟，也是你的枷锁。",
+     fate:"你这辈子最大的功课，是别把自己永远放在「副手」的位置。你是天生的二号位，但二号位不等于永远躲在别人身后。等你看准了、攒够了，你也要敢站到台前，为自己拼一次。",
+     lines:["把事做成，比什么都重要","跟着对的人，做成对的事","我扛得住，你放心"]},
+    {name:"自由职业者", gender:"all", tagline:"超级个体 · 一个人就是一家公司",
+     dims:[70,90,80,60,50,75,60,65],
+     portrait:"你最怕的不是累，是被管。你天生需要自由，需要自己掌控节奏、自己决定做什么。你不适合朝九晚五的格子间，也不适合跟一群人挤在同一个屋檐下。你最适合的状态，是一个人，靠一技之长，把日子过成自己的样子。",
+     alike:"别人看你，觉得你随性、潇洒、不受拘束。其实你只是比谁都清楚，自由是有代价的——没有固定工资，没有五险一金，所有风险自己扛。可你还是选了这条路，因为你宁可饿着，也不愿意被管着。",
+     life:"你藏得最深的，是你也会慌。没有稳定收入的日子里，你会怀疑自己是不是选错了。可你又不甘心回去打工，因为你知道，一旦回去，就再也出不来了。",
+     fate:"你这辈子最大的功课，是把「自由」活成「能力」，而不是「任性」。自由职业不是躺平，是对自己更高的要求——你得比上班时更自律、更会经营自己，才能真的活得又自由又体面。",
+     lines:["宁可饿着，也不被管着","自由，是最大的奢侈品","一个人，也要活成一支队伍"]},
+    {name:"技术深耕专家", gender:"all", tagline:"专家命 · 靠手艺吃一辈子",
+     dims:[30,70,55,75,45,80,60,60],
+     portrait:"你天生适合「把一件事做到极致」。你不喜欢花花绿绿、左右逢源，你更喜欢沉下心来，把手艺磨成绝活。你不是不能创业，是你清楚地知道，你的价值不在「折腾」，在「深耕」——你靠的是别人偷不走、学不来的硬本事。",
+     alike:"别人看你，觉得你闷、内向、不合群。其实你不是不合群，你只是把时间都花在了自己热爱的那件事上。你不需要靠社交证明自己，你的作品、你的专业，就是你最好的名片。",
+     life:"你藏得最深的，是你也会不甘心。看着别人创业赚了大钱，你会想：我埋头干了这么多年，是不是亏了？可你又舍不得放下自己这身手艺，因为它才是你最大的底气。",
+     fate:"你这辈子最大的功课，是「别只会埋头，也要抬头」。你的手艺是根，但光有根，长不成大树。你得学会让别人看见你、为你的专业买单，你的深耕才会真的值钱。",
+     lines:["手艺，是偷不走的底气","把一件事做到极致","慢，就是快"]},
+    {name:"斜杠青年", gender:"all", tagline:"多面手 · 什么都能来一点",
+     dims:[80,75,60,55,70,60,70,55],
+     portrait:"你天生就是「什么都要试一下」的人。你不甘心一辈子只干一件事，你的天赋在于「快速上手、快速切换」。你适合多条腿走路——一份主业保底，几份副业开花。你的人生不是一条直线，而是一片可以随意穿梭的旷野。",
+     alike:"别人看你，觉得你兴趣广、点子多、什么都懂一点。其实你心里也清楚，自己「样样通、样样松」——可这就是你的活法，你不愿意把自己钉死在一个坑里。你对世界的好奇，是你最大的财富。",
+     life:"你藏得最深的，是你也会焦虑「没有一样拿得出手」。看着别人在一个领域深耕成了专家，你会怀疑自己是不是太贪心。可你又停不下来，因为那种「只做一件事」的活法，真的会要了你的命。",
+     fate:"你这辈子最大的功课，是「在多元里找到一个支点」。你可以什么都试，但至少要有一件事，让你能扎下根、赚到钱、安身立命。有了这根支柱，你的其他斜杠，才会是锦上添花，而不是四处漂流。",
+     lines:["人生，可以有无数种活法","什么都试，才知道什么对","不做一辈子的单选题"]},
+  ],
+
+  // 给你的建议（按职业人格名，结果卡展示）
+  advice: {
+    "天生创业者":"别光顾着冲，学会算账、管人、留后路。你最大的风险不是失败，是「以为只靠热情就能成」。找个靠谱的 CFO 或搭档，你的冲劲才有刹车。",
+    "职场精英":"别把平台的资源，当成自己的能力。你在体系里再强，也要定期问自己：离开这个平台，我还值多少？这才是你真正的身价。",
+    "创业合伙人":"跟着对的人很重要，但别把自己永远锁在副手。攒够资本、看准机会，你也该为自己拼一次。你的执行力，值得一个更大的舞台。",
+    "自由职业者":"把自由活成能力，别活成任性。给自己立规矩、定价、经营个人品牌，你才能真正又自由又体面。自由是自律换来的。",
+    "技术深耕专家":"埋头深耕之余，记得抬头让别人看见你。手艺是根，但没人知道的手艺不值钱。学会为你的专业定价、为自己发声。",
+    "斜杠青年":"多元是你的优势，但至少要有一件事能让你安身立命。先立住一个支点，你的其他斜杠才会锦上添花，而不是四处漂流。"
+  },
+
+  // 你的能量词（按职业人格名，结果卡顶部标签）
+  keywords: {
+    "天生创业者":["胆识","拼劲","掌控"],
+    "职场精英":["稳","借力","往上走"],
+    "创业合伙人":["执行","靠谱","补位"],
+    "自由职业者":["自由","自律","独行"],
+    "技术深耕专家":["专注","手艺","极致"],
+    "斜杠青年":["好奇","多元","灵动"]
+  },
+
+  // 一句话，说穿你（按职业人格名，结果卡高亮引用）
+  punchline: {
+    "天生创业者":"你累，不是因为事多，是因为你把这辈子的风险，都一个人扛在了肩上。",
+    "职场精英":"你求稳，不是没野心，是你比谁都清楚：在平台上爬，比裸奔更稳。",
+    "创业合伙人":"你总在别人身后补位，补到忘了，你自己也配站到台前。",
+    "自由职业者":"你宁愿饿着，也不愿被管着——这份自由，是你用所有安全感换来的。",
+    "技术深耕专家":"你埋头磨了半辈子手艺，却忘了抬头看看，这手艺到底值多少钱。",
+    "斜杠青年":"你什么都会一点，所以什么都舍不得放下——可人生，总要有个支点。"
+  },
+
+  // 八个维度的能力小板块描述（结果卡「能力小板块」按人物 top3 维度展示）
+  dimDesc: {
+    "冒险":"敢赌敢试，不怕从头再来",
+    "自驱":"没人推，自己也能往前冲",
+    "决断":"关键时刻，敢拍板不犹豫",
+    "抗压":"扛得住不确定和失败",
+    "整合":"会拉资源、会组局、会借力",
+    "执行":"把想法变成现实，落地为王",
+    "野心":"不甘平庸，想往上走",
+    "财务":"对钱敏感，会算账会经营"
+  },
+
+  // 职业倾向（按职业人格名，结果卡展示；非预测，只说「更适合」不说「会怎样」）
+  mbti: {
+    "天生创业者":"你骨子里就是「自己说了算」的人——受不了被管、受不了朝九晚五，宁可扛风险也要自己定方向。你最适合的，是尽早搭建自己的事业，哪怕从很小的事起步。",
+    "职场精英":"你适合在成熟的组织里往上走——你懂规则、会借力、有耐心，能把平台的资源用到极致。你不是不能创业，是你清楚：在体系里，你更容易把野心变成实实在在的位置。",
+    "创业合伙人":"你最适合站到一个值得追随的人身边，做那个「把想法落地」的人。你执行力强、扛得住事、愿意补位，是一个团队里最值钱的二号位。别一个人从零开始，跟对人才是你的捷径。",
+    "自由职业者":"你适合做「超级个体」——靠一技之长，一个人接活、一个人定价、一个人掌控节奏。你受不了被管，那就别进格子间，但要把自己当成一家公司来经营。",
+    "技术深耕专家":"你适合「靠手艺吃饭」——选定一个领域，往死里钻研，成为那个别人替代不了的人。你不是那种折腾型创业者，你的价值在深耕，在把一件事做到极致。",
+    "斜杠青年":"你适合多条腿走路——一份主业保底，几份副业开花。你的天赋是快速上手、快速切换，那就别逼自己只做一件事，但一定要有一件能安身立命的主业。"
+  },
+
+  // 隐藏天赋（按职业人格名）
+  hidden: {
+    "天生创业者":"你把「不可能」变成「可能」的胆量——别人只敢想，你敢干，而且能真把事办成。",
+    "职场精英":"你在复杂组织里如鱼得水的能力——规则、人心、资源，你都能理顺，这是别人学不来的本事。",
+    "创业合伙人":"你把想法落地的执行力——再飘的点子，到你手里都能变成能交付的结果。",
+    "自由职业者":"你一个人活成一支队伍的能力——不靠谁、不求谁，自己就能把日子经营得有声有色。",
+    "技术深耕专家":"你把手艺磨成绝活的能力——别人偷不走、学不来，这就是你最硬的底气。",
+    "斜杠青年":"你快速上手任何新事物的能力——别人还在入门，你已经能玩出点名堂。"
+  },
+
+  // 你的长期优势（按职业人格名，结果卡展示）
+  strength: {
+    "天生创业者":"你的长期优势是「敢在别人犹豫时先动」——这个时代不缺聪明人，缺的是第一个冲出去、又扛得住摔的人。",
+    "职场精英":"你的长期优势是「把平台的资源变成自己的台阶」——你懂借力、懂规则，越大的平台越是你发光的舞台。",
+    "创业合伙人":"你的长期优势是「让团队离不开你」——你把事做得又稳又漂亮，任何团队有了你，就有了最硬的底气。",
+    "自由职业者":"你的长期优势是「不被任何人定义」——你为自己而活、为自己定价，这份自由是最稀缺的资产。",
+    "技术深耕专家":"你的长期优势是「不可替代」——技能可以被模仿，但你把一件事做到极致的功力，谁也复制不走。",
+    "斜杠青年":"你的长期优势是「跨界连接」——你能把不同领域的知识串起来，这种复合能力在单一大环境里最值钱。"
+  },
+
+  // 盲点与风险提醒（按职业人格名）
+  blindspot: {
+    "天生创业者":"你最大的盲点是「冲太猛、不算账」——气势有余，现金流和风险意识不足，容易栽在细节上。",
+    "职场精英":"你最大的盲点是「把平台当能力」——在体系里待久了，容易高估自己，忘了离开平台你是谁。",
+    "创业合伙人":"你最大的盲点是「太能补位、不会出头」——总在别人身后，反而让自己的价值被低估了。",
+    "自由职业者":"你最大的盲点是「自由过了头、缺乏自律」——没有外部约束，很容易三天打鱼两天晒网。",
+    "技术深耕专家":"你最大的盲点是「太埋头、不抬头」——手艺再硬，不会表达、不会经营，也换不来对等的回报。",
+    "斜杠青年":"你最大的盲点是「样样通、样样松」——什么都试，反而什么都没深耕，容易在关键处掉链子。"
+  },
+
+  // 写在最后（按职业人格名，结果卡结尾，让网友被看见+被治愈，但不点破"治愈"二字）
+  heal: {
+    "天生创业者":"你总是一副天不怕地不怕的样子，可你自己知道，你肩上扛着多少人的期待、多少次的孤注一掷。其实你可以偶尔慢一点、歇一歇，天不会塌。你不是超人，你只是一个很拼、很敢的普通人。",
+    "职场精英":"你在别人眼里永远沉稳、体面、游刃有余，可谁又知道，你为了这份「稳」，咽下了多少委屈和隐忍。别把自己逼得太紧，你的好，不需要靠永远优秀来证明。",
+    "创业合伙人":"你习惯了站在别人身后补位，习惯了把功劳让出去、把辛苦留给自己。可你值得被看见，你的努力、你的靠谱，配得上一个更亮的位置。别总委屈自己。",
+    "自由职业者":"你选了最难走的一条路——一个人扛所有风险，一个人面对所有不确定。你也会慌、也会怀疑，但你从没真的放弃过。这份坚持本身，就很了不起。别忘了好好照顾自己。",
+    "技术深耕专家":"你埋头苦干了那么久，别人看不到你的辛苦，可你的手艺、你的专注，都实实在在长在你身上。别焦虑，你走的是一条越老越值钱的路。慢一点，稳一点，天会亮的。",
+    "斜杠青年":"你总怕自己「不够专一」，总在焦虑自己什么都拿不出手。可你有没有想过，你对这个世界永远敞开的好奇和热情，本身就已经是很多人失去的东西。别用别人的标准，苛责自己的活法。"
+  },
+
+  // 20 道情境题：每个选项 d 是 dims 的索引
+  questions: [
+    {text:"周末临时多了半天空闲，你更想？", opts:[
+      {t:"约上好友出去走走、聊聊天", d:6},{t:"一个人待着，看剧 / 看书 / 整理", d:7},
+      {t:"临时起意来场说走就走的小旅行", d:5},{t:"把拖了很久的正事一口气办掉", d:4}]},
+    {text:"面对一个高挑战、高风险的机会，你？", opts:[
+      {t:"先把利弊想清楚再决定", d:0},{t:"敢赌就赌，机会不等人", d:1},
+      {t:"只要是自己真正想做的就冲", d:7},{t:"先评估清楚自己能不能扛得住", d:4}]},
+    {text:"团队意见分歧时，你通常？", opts:[
+      {t:"梳理逻辑，找出最优解说服大家", d:0},{t:"果断拍板，定了就执行", d:1},
+      {t:"坚持自己的判断，不被带偏", d:7},{t:"让一步，只要大方向对", d:3}]},
+    {text:"遇到很大的困难时，你？", opts:[
+      {t:"拆解问题，一步步找突破口", d:0},{t:"硬扛到底，绝不认输", d:4},
+      {t:"先调整心态，相信总会过去", d:5},{t:"找信任的人倾诉分担", d:6}]},
+    {text:"你希望别人对你的第一印象是？", opts:[
+      {t:"沉稳靠谱、有格局", d:3},{t:"敢想敢做、有冲劲", d:1},
+      {t:"才华横溢、有灵气", d:2},{t:"独立清醒、有主见", d:7}]},
+    {text:"面对背叛或误解，你？", opts:[
+      {t:"冷静分析，该反击就反击", d:0},{t:"不纠缠，直接翻篇", d:3},
+      {t:"会难过很久，但心里不记仇", d:6},{t:"靠自己站起来，不再依赖", d:7}]},
+    {text:"旅行你更喜欢？", opts:[
+      {t:"做好攻略，玩得明明白白", d:0},{t:"说走就走，随遇而安", d:5},
+      {t:"一个人去探索未知", d:7},{t:"一路拍照记录、捕捉灵感", d:2}]},
+    {text:"你身上最突出的特质是？", opts:[
+      {t:"天不怕地不怕", d:1},{t:"有才华有审美", d:2},
+      {t:"抗压能力特别强", d:4},{t:"浪漫、有生活情趣", d:5}]},
+    {text:"关于「坚持」这件事，你？", opts:[
+      {t:"认定目标就死磕到底", d:4},{t:"会灵活调整，不钻牛角尖", d:0},
+      {t:"热爱的事自然能坚持", d:5},{t:"能忍常人所不能忍", d:3}]},
+    {text:"你更愿意为哪种事付出？", opts:[
+      {t:"理想和信仰", d:5},{t:"家人和朋友", d:6},
+      {t:"事业和抱负", d:1},{t:"自由和自我", d:7}]},
+    {text:"如果穿越回古代，你觉得自己更适合？", opts:[
+      {t:"运筹帷幄的谋士", d:0},{t:"征战沙场的将军", d:1},
+      {t:"吟诗作赋的才子才女", d:2},{t:"受人爱戴的一方之主", d:3}]},
+    {text:"面对不喜欢又必须做的事，你？", opts:[
+      {t:"想办法提高效率赶紧做完", d:0},{t:"硬着头皮干，干完拉倒", d:4},
+      {t:"给自己找点乐子，苦中作乐", d:5},{t:"要么不做，要做就立刻干完", d:1}]},
+    {text:"你更看重一段关系里的？", opts:[
+      {t:"舒服自在、彼此尊重", d:3},{t:"灵魂共鸣、聊得来", d:5},
+      {t:"靠得住、能共患难", d:4},{t:"被理解、被温柔以待", d:6}]},
+    {text:"做重大决定时，你最怕？", opts:[
+      {t:"信息不全、判断失误", d:0},{t:"错过机会、后悔没试", d:1},
+      {t:"失去自由、被人束缚", d:7},{t:"伤了在意的人", d:6}]},
+    {text:"你的「高光时刻」更像？", opts:[
+      {t:"力挽狂澜、carry 全场", d:0},{t:"一鸣惊人、技惊四座", d:2},
+      {t:"敢为人先、第一个上", d:1},{t:"被众人认可、有口皆碑", d:3}]},
+    {text:"你更认同哪种人生信条？", opts:[
+      {t:"「谋定而后动」", d:0},{t:"「人生能有几回搏」", d:1},
+      {t:"「生活不止眼前的苟且」", d:5},{t:"「海纳百川，有容乃大」", d:3}]},
+    {text:"独处时你常做什么？", opts:[
+      {t:"复盘、规划、思考", d:0},{t:"学习新东西、充实自己", d:4},
+      {t:"做点有创意的事", d:2},{t:"放空、享受当下", d:5}]},
+    {text:"处理冲突时你倾向于？", opts:[
+      {t:"摆事实讲道理", d:0},{t:"直接摊牌、快刀斩乱麻", d:1},
+      {t:"退一步海阔天空", d:3},{t:"坚持底线，不轻易妥协", d:7}]},
+    {text:"你希望十年后的自己？", opts:[
+      {t:"有成就、有话语权", d:3},{t:"自由、做自己", d:7},
+      {t:"依然浪漫、眼里有光", d:5},{t:"有智慧、看透世事", d:0}]},
+    {text:"最后，选一个最能代表你的字？", opts:[
+      {t:"智", d:0},{t:"勇", d:1},
+      {t:"美", d:2},{t:"暖", d:6}]},
+  ]
+};
+
+/* =====================================================================
+   引擎（换皮肤不改这里）
+   ===================================================================== */
+const dims = CONFIG.dims;
+const dimCount = dims.length;
+let gender = 'all';
+let answers = [];      // 每题选择的选项下标
+let userRaw = new Array(dimCount).fill(0);
+let curQ = 0;
+
+// 每个维度在题库中出现的次数（用于归一化）
+const dimFreq = new Array(dimCount).fill(0);
+CONFIG.questions.forEach(q => q.opts.forEach(o => { dimFreq[o.d]++; }));
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function enterTest(){
+  const v = document.getElementById('codeInput').value.trim();
+  const errEl = document.getElementById('codeErr');
+  const ok = (v === CONFIG.accessCode);
+  if(ok){ errEl.textContent=''; show('screen-gender'); }
+  else { errEl.textContent = '访问码不正确，请重试'; }
+}
+document.getElementById('codeInput').addEventListener('keydown', e=>{ if(e.key==='Enter') enterTest(); });
+
+function setGender(g){
+  gender = g;
+  answers = []; userRaw = new Array(dimCount).fill(0); curQ = 0;
+  show('screen-quiz');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = CONFIG.questions[curQ];
+  document.getElementById('qCount').textContent = `第 ${curQ+1} / ${CONFIG.questions.length} 题`;
+  document.getElementById('progressFill').style.width = ((curQ)/CONFIG.questions.length*100)+'%';
+  document.getElementById('qText').textContent = q.text;
+  const box = document.getElementById('qOptions');
+  box.innerHTML = '';
+  const labels = ['A','B','C','D'];
+  q.opts.forEach((o, i)=>{
+    const b = document.createElement('button');
+    b.className = 'opt' + (answers[curQ]===i ? ' sel':'');
+    b.innerHTML = `<span class="tag">${labels[i]}</span>${o.t}`;
+    b.onclick = ()=>{ selectOption(i); };
+    box.appendChild(b);
+  });
+  document.getElementById('btnPrev').style.visibility = curQ===0 ? 'hidden':'visible';
+  document.getElementById('btnNext').textContent = curQ===CONFIG.questions.length-1 ? '看结果':'下一题';
+}
+
+function selectOption(i){
+  const prev = answers[curQ];
+  if(prev !== undefined){ userRaw[CONFIG.questions[curQ].opts[prev].d]--; }
+  answers[curQ] = i;
+  userRaw[CONFIG.questions[curQ].opts[i].d]++;
+  renderQuestion();
+}
+
+function nextQuestion(){
+  if(answers[curQ] === undefined){ return; }  // 需先选
+  if(curQ < CONFIG.questions.length-1){
+    curQ++;
+    document.getElementById('progressFill').style.width = ((curQ)/CONFIG.questions.length*100)+'%';
+    renderQuestion();
+  } else {
+    computeResult();
+  }
+}
+
+function prevQuestion(){
+  if(curQ > 0){ curQ--; renderQuestion(); }
+}
+
+function normalizedUser(){
+  // 每维归一化到 0-100（按该维出现次数）
+  return dims.map((_, i)=> Math.round( (userRaw[i] / (dimFreq[i]||1)) * 100 ));
+}
+
+function computeResult(){
+  const u = normalizedUser();
+  const pool = CONFIG.figures.filter(f => gender==='all' || f.gender===gender);
+  let best = null, bestSim = -Infinity;
+  pool.forEach(f=>{
+    let dot=0, mu=0, mf=0;
+    for(let i=0;i<dimCount;i++){
+      dot += u[i]*f.dims[i]; mu += u[i]*u[i]; mf += f.dims[i]*f.dims[i];
+    }
+    const sim = dot / (Math.sqrt(mu)*Math.sqrt(mf) || 1);
+    if(sim > bestSim){ bestSim = sim; best = f; }
+  });
+  renderResult(best, u, pool);
+}
+
+function topDims(vec, n=2){
+  return vec.map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v).slice(0,n).map(x=>x.i);
+}
+
+function renderResult(fig, u, pool){
+  const head = document.getElementById('resultHead');
+  const tags = topDims(u,3).map(i=>dims[i]).map(d=>`<span>${d}</span>`).join('');
+  head.innerHTML = `
+    <div class="brand">你的职业人格是</div>
+    <div class="fig-name">${fig.name}</div>
+    <div class="fig-tag">${fig.tagline}</div>
+    <div class="dim-tags">${tags}</div>`;
+  show('screen-result');
+  drawCard(fig, u);
+}
+
+/* ================= 结果卡 canvas 渲染 ================= */
+function wrapLines(ctx, text, maxWidth){
+  const lines = []; let cur = '';
+  for(const ch of text){
+    if(ctx.measureText(cur+ch).width > maxWidth && cur){
+      lines.push(cur); cur = ch;
+    } else cur += ch;
+  }
+  if(cur) lines.push(cur);
+  return lines;
+}
+
+function drawRadar(ctx, cx, cy, r, userVec, figVec){
+  const n = dimCount;
+  const angle = i => -Math.PI/2 + i*2*Math.PI/n;
+  const pt = (i, rr) => [cx + Math.cos(angle(i))*rr, cy + Math.sin(angle(i))*rr];
+
+  ctx.strokeStyle = 'rgba(255,140,90,.25)';
+  ctx.lineWidth = 1;
+  for(let ring=1; ring<=3; ring++){
+    ctx.beginPath();
+    for(let i=0;i<n;i++){ const [x,y]=pt(i, r*ring/3); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+    ctx.closePath(); ctx.stroke();
+  }
+  for(let i=0;i<n;i++){
+    const [x,y]=pt(i,r);
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y);
+    ctx.strokeStyle='rgba(255,140,90,.35)'; ctx.stroke();
+  }
+  ctx.fillStyle = '#c7d3e4'; ctx.font = '13px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  for(let i=0;i<n;i++){
+    const [x,y]=pt(i, r+20);
+    ctx.fillText(dims[i], x, y);
+  }
+  ctx.strokeStyle = '#ff8c5a'; ctx.setLineDash([5,4]); ctx.lineWidth=1.6;
+  ctx.beginPath();
+  for(let i=0;i<n;i++){ const [x,y]=pt(i, r*figVec[i]/100); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.closePath(); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(255,140,90,.35)'; ctx.strokeStyle = '#ff8c5a'; ctx.lineWidth=2;
+  ctx.beginPath();
+  for(let i=0;i<n;i++){ const [x,y]=pt(i, r*userVec[i]/100); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+}
+
+function drawCard(fig, u){
+  const W = 750;
+  const padX = 48;
+  const c = document.getElementById('resultCanvas');
+  const ctx = c.getContext('2d');
+
+  const measure = (text, font, maxW) => {
+    ctx.font = font;
+    return wrapLines(ctx, text, maxW);
+  };
+
+  const titleFont = '800 38px "PingFang SC","Microsoft YaHei",sans-serif';
+  const nameFont  = '900 60px "PingFang SC","Microsoft YaHei",sans-serif';
+  const tagFont   = 'italic 22px "PingFang SC","Microsoft YaHei",sans-serif';
+  const secFont   = '800 27px "PingFang SC","Microsoft YaHei",sans-serif';
+  const bodyFont  = '21px "PingFang SC","Microsoft YaHei",sans-serif';
+  const bodyMaxW = W - padX*2;
+  const bodyLH = 33;
+  const secTitleH = 42;
+  const secBodyPad = 6;
+  const secGap = 24;
+
+  const tagLines    = measure(fig.tagline, tagFont, W-120);
+  const kws = (CONFIG.keywords && CONFIG.keywords[fig.name]) || [];
+  const punch = (CONFIG.punchline && CONFIG.punchline[fig.name]) || '';
+  const punchFont = 'italic 26px "PingFang SC","Microsoft YaHei",sans-serif';
+  const punchLines = punch ? measure(punch, punchFont, W - padX*2 - 28) : [];
+  // 能力小板块：按人物自身最强 3 维，用 dimDesc 生成三行小板块
+  const figTop = topDims(fig.dims, 3);
+  const facetLines = [];
+  figTop.forEach(i => {
+    measure('· ' + dims[i] + '：' + (CONFIG.dimDesc[dims[i]]||''), bodyFont, bodyMaxW)
+      .forEach(l => facetLines.push(l));
+  });
+
+  const sections = [
+    ['「 你的职业人格底色 」', measure(fig.portrait, bodyFont, bodyMaxW)],
+    ['「 你适合打工还是创业 」', measure(CONFIG.mbti[fig.name]||'', bodyFont, bodyMaxW)],
+    ['「 别人眼里的你 · 真正的你 」', measure(fig.alike, bodyFont, bodyMaxW)],
+    ['「 能力小板块 」', facetLines],
+    ['「 你不肯让人看见的那一面 」', measure(fig.life, bodyFont, bodyMaxW)],
+    ['「 隐藏天赋 」', measure(CONFIG.hidden[fig.name]||'', bodyFont, bodyMaxW)],
+    ['「 你的长期优势 」', measure(CONFIG.strength[fig.name]||'', bodyFont, bodyMaxW)],
+    ['「 你的盲点与风险 」', measure(CONFIG.blindspot[fig.name]||'', bodyFont, bodyMaxW)],
+    ['「 你这辈子最大的功课 」', measure(fig.fate, bodyFont, bodyMaxW)],
+    ['「 给你的建议 」', measure(CONFIG.advice[fig.name]||'', bodyFont, bodyMaxW)],
+    ['「 写在最后 」', measure(CONFIG.heal[fig.name]||'', bodyFont, bodyMaxW)],
+  ];
+  const lineLines = fig.lines.map(l=>measure(l, bodyFont, bodyMaxW));
+
+  const radarR = 140;
+  const radarH = radarR*2 + 60;
+
+  // —— 先量文字高度，确定 canvas 总高 ——
+  let y = 78;
+  y += 46;                            // title 行
+  y += 64;                            // 人物名
+  y += tagLines.length*32 + 28;       // tagline
+  if(kws.length){ y += 42 + 22; }     // 能量词标签
+  if(punch){ y += 26 + punchLines.length*38 + 32; }  // 一句话说穿你
+  const radarCy = y + radarR + 40;
+  y += radarH + 26;                   // 雷达图区域
+  sections.forEach(s=>{ y += secTitleH + secBodyPad + s[1].length*bodyLH + secGap; });
+  y += secTitleH + 6;                 // 三句台词标题
+  lineLines.forEach(ll=>{ y += ll.length*bodyLH + 6; });
+  y += 76 + 130;                      // 结尾商品引导 + footer + 底部留白
+
+  const H = Math.max(Math.ceil(y + 90), 1500);
+  c.width = W; c.height = H;
+
+  // —— 绘制 ——
+  const bg = ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,'#0d1b33'); bg.addColorStop(0.5,'#14294a'); bg.addColorStop(1,'#0d1b33');
+  ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
+
+  ctx.fillStyle = 'rgba(255,140,90,.9)';
+  ctx.fillRect(padX, 40, 3, 90);
+  ctx.fillRect(W-padX-3, 40, 3, 90);
+
+  let ty = 78;
+  ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+
+  ctx.fillStyle = '#8fa0b8'; ctx.font = titleFont;
+  ctx.fillText(CONFIG.title, W/2, ty); ty += 46;
+
+  ctx.fillStyle = '#eaf0f7'; ctx.font = nameFont;
+  ctx.fillText(fig.name, W/2, ty); ty += 64;
+
+  ctx.fillStyle = '#ff8c5a'; ctx.font = tagFont;
+  tagLines.forEach(l=>{ ctx.fillText(l, W/2, ty); ty += 32; });
+  ty += 28;
+
+  // 能量词标签（可晒的社交标签）
+  if(kws.length){
+    const kwFont = '800 23px "PingFang SC","Microsoft YaHei",sans-serif';
+    const kwH = 42, pad = 15, gap = 12, radius = 21;
+    ctx.font = kwFont;
+    const widths = kws.map(k=>ctx.measureText(k).width + pad*2);
+    const totalW = widths.reduce((a,b)=>a+b,0) + gap*(kws.length-1);
+    let kx = (W - totalW)/2;
+    kws.forEach((k,i)=>{
+      const w = widths[i];
+      ctx.beginPath();
+      ctx.moveTo(kx+radius, ty);
+      ctx.arcTo(kx+w, ty, kx+w, ty+kwH, radius);
+      ctx.arcTo(kx+w, ty+kwH, kx, ty+kwH, radius);
+      ctx.arcTo(kx, ty+kwH, kx, ty, radius);
+      ctx.arcTo(kx, ty, kx+w, ty, radius);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(255,140,90,.14)';
+      ctx.fill();
+      ctx.strokeStyle = '#ff8c5a'; ctx.lineWidth = 1.4; ctx.stroke();
+      ctx.fillStyle = '#f0f4f9'; ctx.font = kwFont;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(k, kx + w/2, ty + kwH/2 + 1);
+      kx += w + gap;
+    });
+    ty += kwH + 22;
+  }
+
+  // 一句话，说穿你（高亮金句）
+  if(punch){
+    ty += 26;
+    ctx.textAlign='center';
+    ctx.fillStyle = '#ff8c5a';
+    ctx.font = '22px "PingFang SC","Microsoft YaHei",sans-serif';
+    ctx.fillText('❝', W/2, ty - 6); ty += 4;
+    ctx.fillStyle = '#f4f0e8';
+    ctx.font = punchFont;
+    punchLines.forEach(l=>{ ctx.fillText(l, W/2, ty); ty += 38; });
+    ty += 24;
+  }
+
+  // 雷达图（用户向量按最强维度缩放到满格，突出个人峰值）
+  const uShow = (()=>{ const m = Math.max(...u, 1); return u.map(v=>Math.round(v/m*100)); })();
+  const rcY = ty + radarR + 40;
+  drawRadar(ctx, W/2, rcY, radarR, uShow, fig.dims);
+  ty = rcY + radarR + 40 + 26;
+
+  // 分节绘制
+  const drawSec = (title, linesArr) => {
+    ctx.textAlign='left';
+    ctx.fillStyle = '#ff8c5a';
+    ctx.font = secFont;
+    ctx.fillText(title, padX, ty); ty += secTitleH + secBodyPad;
+    ctx.fillStyle = '#eaf0f7';
+    ctx.font = bodyFont;
+    linesArr.forEach(l=>{ ctx.fillText(l, padX, ty); ty += bodyLH; });
+    ty += secGap;
+  };
+  sections.forEach(s=>drawSec(s[0], s[1]));
+
+  ctx.fillStyle = '#ff8c5a'; ctx.font = secFont; ctx.textAlign='left';
+  ctx.fillText('「 三句台词 」', padX, ty); ty += secTitleH + 6;
+  ctx.fillStyle = '#eaf0f7'; ctx.font = bodyFont;
+  fig.lines.forEach(l=>{
+    const ls = measure(l, bodyFont, bodyMaxW);
+    ls.forEach(s=>{ ctx.fillText('· ' + s, padX, ty); ty += bodyLH; });
+    ty += 6;
+  });
+
+  ty += 22;
+  ctx.textAlign='center';
+
+  // —— 结尾商品引导（不点破，只说「想更进一步」）——
+  ctx.fillStyle = '#ff8c5a'; ctx.font = '800 22px "PingFang SC","Microsoft YaHei",sans-serif';
+  const upLines = measure(CONFIG.upsellText||'', '800 22px "PingFang SC","Microsoft YaHei",sans-serif', W - padX*2 - 16);
+  upLines.forEach(l=>{ ctx.fillText(l, W/2, ty); ty += 32; });
+  ty += 10;
+  ctx.fillStyle = '#eaf0f7'; ctx.font = '16px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText(CONFIG.upsellBtn + ' →', W/2, ty); ty += 24;
+
+  ctx.fillStyle = '#8fa0b8'; ctx.font = '16px "PingFang SC","Microsoft YaHei",sans-serif';
+  ctx.fillText('长按图片保存 · 分享给朋友测测 TA 像谁', W/2, ty);
+
+  c.dataset.fig = fig.name;
+}
+
+function openUpsell(){
+  if(CONFIG.upsellUrl){ window.open(CONFIG.upsellUrl, '_blank'); }
+}
+
+function saveImage(){
+  const c = document.getElementById('resultCanvas');
+  const a = document.createElement('a');
+  a.href = c.toDataURL('image/png');
+  a.download = '测你适合打工还是创业-' + (c.dataset.fig||'结果') + '.png';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+function restart(){
+  answers = []; userRaw = new Array(dimCount).fill(0); curQ = 0;
+  show('screen-quiz'); renderQuestion();
+}
+function backToGender(){ show('screen-gender'); }
+</script>
+</body>
+</html>
