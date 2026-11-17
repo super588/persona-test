@@ -143,8 +143,8 @@ const CONFIG = {
   subtitle: "你的答案，藏着你没敢承认的那条路",
   accessCode: "2027",
   // 结尾商品引导（结果卡底部 + 结果屏按钮两处都读这里）
-  upsellText: "想知道你骨子里像哪位历史人物？",
-  upsellBtn: "解锁「历史人格原型」",
+  upsellText: "如果这套说中了你，店铺里还有几套更走心的测试，陪你把自己看明白。",
+  upsellBtn: "去店里看看",
   upsellUrl: "https://super588.github.io/persona-test/",
   dims: ["冒险","自驱","决断","抗压","整合","执行","野心","财务"],
 
@@ -684,7 +684,7 @@ function drawCard(fig, u){
   ctx.fillText(CONFIG.upsellBtn + ' →', W/2, ty); ty += 24;
 
   ctx.fillStyle = '#8fa0b8'; ctx.font = '16px "PingFang SC","Microsoft YaHei",sans-serif';
-  ctx.fillText('长按图片保存 · 分享给朋友测测 TA 像谁', W/2, ty);
+  ctx.fillText('长按图片可保存 · 把这份结果，留给未来的自己', W/2, ty);
 
   c.dataset.fig = fig.name;
 }
